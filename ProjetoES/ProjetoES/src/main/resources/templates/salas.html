@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salas ISCTE</title>
+    <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/salas.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header__title">Salas ISCTE</h1>
+    </header>
+
+    <main class="container">
+        <div class="upload-container">
+            <label for="csvFileInput" class="upload-label">Selecione um arquivo CSV:</label>
+            <input type="file" id="csvFileInput" class="upload-input" onchange="handleFileSelect2(event)">
+            <button onclick="uploadFile2()">Salvar Salas</button>
+        </div>
+
+        <!-- Adicionando os campos de filtro -->
+        <div class="filter-container">
+            <label for="startTime">Hora de início:</label>
+            <input type="time" id="startTime">
+            
+            <label for="dayOfWeek">Dia:</label>
+            <input type="date" id="dayOfWeek">
+            
+            <button onclick="checkAvailability()">Ver disponibilidade</button>
+            <button onclick="resetFilters()">Resetar Filtros</button>
+
+        </div>
+
+        <div id="tableContainer"></div>
+
+        <button class="boat-button" onclick="window.location.href='/'">&#x21A9;</button>
+    </main>
+    
+    <script src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+    <script src="/js/salas.js"></script>
+</body>
+</html>

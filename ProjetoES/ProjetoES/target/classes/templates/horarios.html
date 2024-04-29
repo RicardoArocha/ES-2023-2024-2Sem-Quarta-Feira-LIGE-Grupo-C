@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios ISCTE</title>
+    <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/horarios.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header__title">Horarios ISCTE</h1>
+    </header>
+
+    <main class="container">
+        <div class="upload-container">
+            <label for="csvFileInput" class="upload-label">Selecione um arquivo CSV:</label>
+            <input type="file" id="csvFileInput" class="upload-input" onchange="handleFileSelect(event)">
+            <button id="saveFileButton" onclick="saveFileToServer()">Guardar Ficheiro</button>
+
+            <button onclick="uploadFile()">Atualizar horário</button>
+        </div>
+        
+        <div class="or-search-container">
+            <input type="text" id="or-search-input" placeholder="Pesquisa OU (campo1 ou campo2)">
+            <button onclick="applyOrFilter()">Pesquisar</button>
+        </div>
+        
+        <div id="column-controls" class="column-controls"></div>
+        
+        <div id="tableContainer"></div>
+        
+        <!-- Nova seção para substituição -->
+        <div class="substitution-container">
+            <label for="substitution-id">ID da Aula para Substituição:</label>
+            <input type="text" id="substitution-id" placeholder="Insira o ID">
+            <button onclick="markSubstitutionByID()">Substituir</button> <!-- Função que salva o ID e redireciona -->
+        </div>
+        
+        <button class="boat-button" onclick="window.location.href='/'">&#x21A9;</button>
+    </main>
+
+    <script src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+    <script src="/js/script.js"></script>
+ 
+</body>
+</html>

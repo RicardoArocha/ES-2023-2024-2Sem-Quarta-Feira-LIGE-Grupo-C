@@ -88,3 +88,53 @@ body {
     display: none;
     /* Outros estilos para o modal, como posição e alinhamento */
 }
+
+/* Estilos para o container do heatmap */
+#heatmap-container {
+    margin-top: 30px; /* Espaçamento superior para separá-lo do resto do conteúdo */
+    margin-left: 10px;
+    overflow-x: auto; /* Adicionar rolagem horizontal se necessário */
+}
+
+/* Estilos para a tabela do heatmap */
+.heatmap-table {
+    width: 50%; /* Para ocupar todo o espaço disponível no container */
+    border-collapse: collapse; /* Para unir as células da tabela */
+}
+
+/* Estilos para as linhas do heatmap */
+.heatmap-row {
+    height: 10px; /* Altura das linhas */
+}
+
+/* Estilos para as células do heatmap */
+.heatmap-cell {
+    width: 14%; /* Largura das células (100% dividido por 7 dias) */
+    border: 2px solid #ffffff; /* Adicionar borda para separar as células */
+    text-align: center; /* Alinhar o texto ao centro */
+    vertical-align: middle; /* Alinhar o conteúdo verticalmente ao centro */
+    position: relative; /* Permite posicionar o texto com base nesta célula */
+}
+
+.heatmap-cell:hover {
+   font-size: x-small;
+   color: white;
+}
+
+/* Estilos para os rótulos dos dias da semana */
+.dia-label-cell {
+    font-size: small;
+    font-weight: bold;
+    text-align: center; /* Centralizar o texto */
+}
+
+/* Estilos para os rótulos das horas */
+.hora-label-cell {
+    font-size: small;
+    font-weight: bold;
+    padding: 5px 0; /* Aumentar o espaçamento interno das células */
+    margin: 0; /* Remover qualquer margem */
+    line-height: 1; /* Reduzir a altura da linha para aproximar o texto da célula */
+    white-space: nowrap; /* Impede que o texto seja quebrado em várias linhas */
+    vertical-align: text-top; /* Alinhar verticalmente o texto */
+}

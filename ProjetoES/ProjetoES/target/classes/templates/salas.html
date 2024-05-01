@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/salas.css">
 </head>
+
 <body>
     <header class="header">
         <h1 class="header__title">Salas ISCTE</h1>
@@ -23,21 +25,33 @@
         <div class="filter-container">
             <label for="startTime">Hora de início:</label>
             <input type="time" id="startTime">
-            
+
             <label for="dayOfWeek">Dia:</label>
             <input type="date" id="dayOfWeek">
-            
+
             <button onclick="checkAvailability()">Ver disponibilidade</button>
             <button onclick="resetFilters()">Resetar Filtros</button>
 
         </div>
 
         <div id="tableContainer"></div>
+        <div id="heatmap-container"></div>
 
         <button class="boat-button" onclick="window.location.href='/'">&#x21A9;</button>
+
     </main>
-    
+
     <script src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+    <!-- Referenciando a biblioteca Chart.js hospedada na web -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="/js/salas.js"></script>
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            criarHeatmapMatriz(); 
+        });
+    </script> -->
 </body>
+
 </html>

@@ -1,10 +1,9 @@
 let table;
 let roomData = []; // Dados das salas
 let scheduleData = []; // Dados dos horários
-
 // Evento para inicializar a página
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('csvFileInput').addEventListener('change', handleFileSelect2, false);
     loadRoomData();
     loadScheduleData();
@@ -37,7 +36,7 @@ function handleFileSelect2(event) {
 // Lê e processa o arquivo CSV carregado
 function parseFile2(file) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         const contents = e.target.result;
         const data = parseCSV2(contents);
         createTable(data.headers, data.data);
@@ -53,7 +52,7 @@ function loadRoomData() {
         .then(csvData => {
             const parsedData = parseCSV2(csvData); // Aqui é onde você deve capturar os dados parseados
             roomData = parsedData.data; // Agora roomData é apenas o array 'data'
-            if(parsedData.headers && parsedData.data) { // Certifique-se de que ambos estão definidos
+            if (parsedData.headers && parsedData.data) { // Certifique-se de que ambos estão definidos
                 createTable(parsedData.headers, parsedData.data);
             }
         })
@@ -68,6 +67,7 @@ function loadScheduleData() {
         .then(csvData => {
             scheduleData = parseCSV2(csvData).data;
             console.log("Dados dos horários carregados", scheduleData);
+            criarHeatmapMatriz();
         })
         .catch(error => console.error('Erro ao carregar os dados dos horários:', error));
 }
@@ -122,7 +122,7 @@ function convertTimeToMinutes(timeString) {
 function resetFilters() {
     document.getElementById('startTime').value = '';
     document.getElementById('dayOfWeek').value = '';
-    if(table) {
+    if (table) {
         table.clearFilter(true); // remove filtros, mas mantém os dados da tabela
         table.setData(roomData); // redefine os dados da tabela para o conjunto de dados original
     }
@@ -130,7 +130,7 @@ function resetFilters() {
 
 // Cria a tabela com os dados das salas
 function createTable(headers, data) {
-    if(!headers || !data) {
+    if (!headers || !data) {
         console.error('Dados ou cabeçalhos indefinidos para criar a tabela');
         return; // Sai da função se headers ou data não estiverem definidos
     }
@@ -139,10 +139,10 @@ function createTable(headers, data) {
     const columns = [{
         title: "Ações",
         headerSort: false,
-        formatter: function(cell, formatterParams) {
+        formatter: function (cell, formatterParams) {
             const button = document.createElement("button");
             button.textContent = "Marcar Substituição";
-            button.onclick = function() {
+            button.onclick = function () {
                 confirmSubstitution(cell.getRow().getData());
             };
             return button;
@@ -181,7 +181,7 @@ function createTable(headers, data) {
 function uploadFile2() {
     var fileInput = document.getElementById('csvFileInput');
     var file = fileInput.files[0];
-    
+
     var formData = new FormData();
     formData.append('file', file, 'caracterizacaodassalas.csv');
 
@@ -189,18 +189,18 @@ function uploadFile2() {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        if(response.ok) {
-            alert('Arquivo de salas salvo com sucesso.');
-            loadRoomData(); // Recarregar os dados da sala após o sucesso do upload
-        } else {
-            throw new Error('Falha ao salvar o arquivo de salas.');
-        }
-    })
-    .catch(error => {
-        console.error('Erro ao salvar o arquivo de salas:', error);
-        alert('Erro ao salvar o arquivo de salas.');
-    });
+        .then(response => {
+            if (response.ok) {
+                alert('Arquivo de salas salvo com sucesso.');
+                loadRoomData(); // Recarregar os dados da sala após o sucesso do upload
+            } else {
+                throw new Error('Falha ao salvar o arquivo de salas.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao salvar o arquivo de salas:', error);
+            alert('Erro ao salvar o arquivo de salas.');
+        });
 }
 // Criação do modal HTML
 // Lista de características das salas
@@ -295,7 +295,7 @@ function confirmSubstitution(rowData) {
 
     openModal(); // Abre o modal para permitir substituição
 }
- 
+
 
 // Função para submeter a substituição
 // Função para submeter a substituição
@@ -327,7 +327,7 @@ function submitSubstitution(event) {
         const selectedCharacteristics = Array.from(
             formData.getAll("room-attributes")
         ).join(", "); // Converte para uma string separada por vírgulas
-        
+
         rowToUpdate["Características da sala pedida para a aula"] = selectedCharacteristics; // Preenche o campo com as características
 
         saveScheduleToCSV(); // Salva o arquivo CSV atualizado
@@ -395,14 +395,14 @@ function saveScheduleToCSV() {
         method: 'POST',
         body: formData,
     })
-    .then(response => {
-        if (response.ok) {
-            console.log("Horário atualizado com sucesso.");
-        } else {
-            throw new Error("Erro ao salvar o horário.");
-        }
-    })
-    .catch(error => console.error("Erro ao salvar o horário:", error));
+        .then(response => {
+            if (response.ok) {
+                console.log("Horário atualizado com sucesso.");
+            } else {
+                throw new Error("Erro ao salvar o horário.");
+            }
+        })
+        .catch(error => console.error("Erro ao salvar o horário:", error));
 }
 function calculateWeekOfYear(dateStr) {
     const date = new Date(dateStr.split('/').reverse().join('-'));
@@ -419,4 +419,128 @@ function calculateSemesterWeek(dateStr, semesterStartStr) {
     return (weekNo < 1 || weekNo > 18) ? "-" : weekNo;
 }
 
+//calcula o nº de salas ocupadas dado um dia da semana e um intervalo de tempo (inicio e fim)
+function calcularSalasOcupadas(diaSemana, horaInicio, horaFim) {
+    const searchStartTime = convertTimeToMinutes(horaInicio);
+    const searchEndTime = convertTimeToMinutes(horaFim);
+
+    const horariosNoDia = scheduleData.filter(schedule => schedule['Dia da semana'] === diaSemana);
+
+    let salasOcupadas = 0;
+
+    for (const horario of horariosNoDia) {
+        const roomStartTime = convertTimeToMinutes(horario['Hora início da aula']);
+        const roomEndTime = convertTimeToMinutes(horario['Hora fim da aula']);
+
+        if (
+            //Se o tempo de inicio da procura for depois ou igual ao tempo de início da sala e antes do tempo de término da sala
+            (searchStartTime >= roomStartTime && searchStartTime < roomEndTime) ||
+            //Se o tempo de término da procura for após o tempo de início da sala e antes ou igual ao tempo de término da sala
+            (searchEndTime > roomStartTime && searchEndTime <= roomEndTime) ||
+            //Se o intervalo de procura envolver completamente o intervalo de tempo da sala 
+            (searchStartTime <= roomStartTime && searchEndTime >= roomEndTime)
+        ) {
+            salasOcupadas++;
+        }
+    }
+    return salasOcupadas;
+}
+
+// Função para criar o heatmap na forma de matriz
+function criarHeatmapMatriz() {
+    const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
+    const horas = Array.from({ length: 30 }, (_, index) => index + 8 * 2); // 8 horas (8 * 2 intervalos de meia hora)
+
+    const heatmapContainer = document.getElementById('heatmap-container');
+
+    // Cria uma tabela para representar o heatmap
+    const heatmapTable = document.createElement('table');
+    heatmapTable.classList.add('heatmap-table');
+
+    // Cria uma linha para os rótulos dos dias da semana
+    const diasLabelRow = document.createElement('tr');
+    diasLabelRow.classList.add('dias-label-row');
+
+    // Cria uma célula vazia para o canto superior esquerdo
+    const emptyCell = document.createElement('td');
+    emptyCell.classList.add('empty-cell');
+    diasLabelRow.appendChild(emptyCell);
+
+    // Adiciona os rótulos dos dias da semana
+    for (const dia of diasDaSemana) {
+        const diaLabelCell = document.createElement('td');
+        diaLabelCell.classList.add('dia-label-cell');
+        diaLabelCell.textContent = dia;
+        diasLabelRow.appendChild(diaLabelCell);
+    }
+
+    heatmapTable.appendChild(diasLabelRow);
+
+    // Cria as linhas e colunas da tabela
+    for (const hora of horas) {
+        const horaRow = document.createElement('tr');
+        horaRow.classList.add('heatmap-row');
+
+        // Adiciona o rótulo da hora para cada linha
+        const horaLabelCell = document.createElement('td');
+        horaLabelCell.classList.add('hora-label-cell');
+        const horaInicio = `${Math.floor(hora / 2)}:${(hora % 2) * 30}`.padStart(2, '0');
+        horaLabelCell.textContent = horaInicio;
+        horaRow.appendChild(horaLabelCell);
+
+        for (const dia of diasDaSemana) {
+            const salaCell = document.createElement('td');
+            salaCell.classList.add('heatmap-cell');
+
+            const horaInicio = `${Math.floor(hora / 2)}:${(hora % 2) * 30}`.padStart(2, '0');
+            const horaFim = `${Math.floor((hora + 1) / 2)}:${((hora + 1) % 2) * 30}`.padStart(2, '0');
+
+            const salasOcupadas = calcularSalasOcupadas(dia, horaInicio, horaFim);
+
+            // Define a cor do quadrado com base no número médio de salas ocupadas
+            salaCell.style.backgroundColor = getColorForSalasOcupadas(salasOcupadas);
+
+            // Adiciona um evento de hover para exibir o número de salas ao passar o cursor sobre a célula
+            salaCell.addEventListener('mouseenter', () => {
+                salaCell.textContent = `Salas: ${salasOcupadas}`;
+            });
+            salaCell.addEventListener('mouseleave', () => {
+                salaCell.textContent = ''; // Remove o texto ao retirar o cursor da célula
+            });
+
+            horaRow.appendChild(salaCell);
+        }
+
+        heatmapTable.appendChild(horaRow);
+    }
+
+    heatmapContainer.appendChild(heatmapTable);
+
+}
+
+// Função para definir a cor com base no número de salas ocupadas
+function getColorForSalasOcupadas(salasOcupadas) {
+    // Define intervalos de salas ocupadas e suas cores correspondentes
+
+    const colorRanges = [
+        { min: 0, max: 100, color: 'rgba(201, 252, 253, 0.7)' }, // Celeste Blue para até 100 salas
+        { min: 101, max: 200, color: 'rgba(181, 233, 253, 1) ' }, // Non-photo Blue para até 200 salas
+        { min: 201, max: 300, color: 'rgba(161, 213, 253, 1) ' }, // Light Sky Blue para até 300 salas
+        { min: 301, max: 400, color: 'rgba(142, 194, 254, 1) ' }, // Jordy Blue para até 400 salas
+        { min: 401, max: 500, color: 'rgba(122, 174, 254, 1)' }, // Jordy Blue 2 para até 500 salas
+        { min: 501, max: 600, color: 'rgba(102, 155, 254, 1) ' }, // Cornflower Blue para até 600 salas
+        { min: 601, max: 700, color: 'rgba(82, 136, 254, 1)' }, // Cornflower Blue 2 para até 700 salas
+        { min: 701, max: 800, color: 'rgba(62, 116, 254, 1) ' }, // Blue Crayola para até 800 salas
+        { min: 801, max: 900, color: 'rgba(43, 97, 255, 1)' }, // Neon Blue para até 900 salas
+        { min: 901, max: 1000, color: 'rgba(23, 77, 255, 1) ' }, // RISD Blue para até 1000 salas
+        { min: 1001, max: 2000, color: 'rgba(3, 58, 255, 1)' } // Palatinate Blue para até 2000 salas
+    ];
+
+
+    // Encontra o intervalo de cores correspondente ao número de salas ocupadas
+    const range = colorRanges.find(range => salasOcupadas >= range.min && salasOcupadas <= range.max);
+
+    // Retorna a cor com base no número de salas ocupadas
+    return range ? `${range.color}${salasOcupadas / 2000})` : 'rgba(255, 255, 255, 0)'; // Cor branca para mais de 2000 salas
+}
 

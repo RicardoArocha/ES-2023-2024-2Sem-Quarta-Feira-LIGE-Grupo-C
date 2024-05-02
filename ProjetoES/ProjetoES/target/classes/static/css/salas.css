@@ -25,7 +25,9 @@ body {
 
 /* Estilos do container principal */
 .container {
-    max-width: 1200px;
+    width: 90%; /* Ocupa 90% da largura da tela */
+    max-width: 1400px; /* Largura máxima de 1400px */
+    margin: 0 auto; /* Centraliza o contêiner na tela */
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -90,25 +92,25 @@ body {
 }
 
 /* Estilos para o container do heatmap */
-#heatmap-container {
+#heatmap-containerDias {
     margin-top: 30px; /* Espaçamento superior para separá-lo do resto do conteúdo */
     margin-left: 10px;
     overflow-x: auto; /* Adicionar rolagem horizontal se necessário */
 }
 
 /* Estilos para a tabela do heatmap */
-.heatmap-table {
+.heatmap-tableDias {
     width: 50%; /* Para ocupar todo o espaço disponível no container */
     border-collapse: collapse; /* Para unir as células da tabela */
 }
 
 /* Estilos para as linhas do heatmap */
-.heatmap-row {
+.heatmap-rowDias {
     height: 10px; /* Altura das linhas */
 }
 
 /* Estilos para as células do heatmap */
-.heatmap-cell {
+.heatmap-cellDias {
     width: 14%; /* Largura das células (100% dividido por 7 dias) */
     border: 2px solid #ffffff; /* Adicionar borda para separar as células */
     text-align: center; /* Alinhar o texto ao centro */
@@ -116,20 +118,20 @@ body {
     position: relative; /* Permite posicionar o texto com base nesta célula */
 }
 
-.heatmap-cell:hover {
+.heatmap-cellDias:hover {
    font-size: x-small;
    color: white;
 }
 
 /* Estilos para os rótulos dos dias da semana */
-.dia-label-cell {
+.dia-label-cellDias {
     font-size: small;
     font-weight: bold;
     text-align: center; /* Centralizar o texto */
 }
 
 /* Estilos para os rótulos das horas */
-.hora-label-cell {
+.hora-label-cellDias {
     font-size: small;
     font-weight: bold;
     padding: 5px 0; /* Aumentar o espaçamento interno das células */
@@ -137,4 +139,112 @@ body {
     line-height: 1; /* Reduzir a altura da linha para aproximar o texto da célula */
     white-space: nowrap; /* Impede que o texto seja quebrado em várias linhas */
     vertical-align: text-top; /* Alinhar verticalmente o texto */
+}
+
+#showHeatmapButton, #toggleHeatmapButton {
+    padding: 10px 15px;
+    font-size: 13px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(to right, #bbbbbb, #333);
+    background-size: 200% auto;
+    transition: background-position 0.3s ease;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace; 
+    border: 1px solid #000; 
+    margin-top: 20px;
+}
+
+#showHeatmapButton:hover, #toggleHeatmapButton:hover {
+    background-position: right center;
+}
+
+/* Estilos para o container do heatmap */
+#heatmap-containerMes {
+    margin-top: 30px; /* Espaçamento superior para separá-lo do resto do conteúdo */
+    margin-left: 10px;
+    overflow-x: auto; /* Adicionar rolagem horizontal se necessário */
+}
+
+/* Estilos para a tabela do heatmap */
+.heatmap-tableMes {
+    width: 100%; /* Para ocupar todo o espaço disponível no container */
+    border-collapse: collapse; /* Para unir as células da tabela */
+}
+
+/* Estilos para as linhas do heatmap */
+.heatmap-rowMes {
+    height: 20px; /* Altura das linhas */
+}
+
+/* Estilos para as células do heatmap */
+.heatmap-cellMes {
+    width: 2,31%; 
+    border: 1px solid #ffffff; /* Adicionar borda para separar as células */
+    text-align: center; /* Alinhar o texto ao centro */
+    vertical-align: middle; /* Alinhar o conteúdo verticalmente ao centro */
+    position: relative; /* Permite posicionar o texto com base nesta célula */
+}
+
+.heatmap-cellMes:hover {
+   font-size: x-small;
+   color: white;
+}
+
+/* Estilos para os rótulos dos dias da semana */
+.dia-label-cellMes {
+    font-size: small;
+    font-weight: bold;
+    text-align: center; /* Centralizar o texto */
+}
+
+/* Estilos para os rótulos das horas */
+.hora-label-cellMes {
+    font-size: small;
+    font-weight: bold;
+    padding: 5px 0; /* Aumentar o espaçamento interno das células */
+    margin: 0; /* Remover qualquer margem */
+    line-height: 1; /* Reduzir a altura da linha para aproximar o texto da célula */
+    white-space: nowrap; /* Impede que o texto seja quebrado em várias linhas */
+    vertical-align: text-top; /* Alinhar verticalmente o texto */
+}
+
+/* Estilo para o seletor de mês */
+#monthSelect {
+    font-family: Arial, sans-serif; /* Escolha uma fonte legível */
+    font-size: 14px; /* Tamanho de fonte padrão */
+    padding: 5px; /* Adiciona um pouco de espaço interno */
+    border-radius: 4px; /* Borda arredondada */
+    border: 1px solid #ccc; /* Borda cinza */
+}
+
+/* Estilo para o botão */
+#heatmapButton {
+    font-family: Arial, sans-serif; /* Escolha uma fonte legível */
+    font-size: 11px; /* Tamanho de fonte padrão */
+    padding: 6px 10px; /* Adiciona um pouco de espaço interno */
+    border-radius: 2px; /* Borda arredondada */
+    border: none; /* Remove a borda */
+    background-color: #525151; /* Cor de fundo azul */
+    color: #fff; /* Cor do texto branco */
+    cursor: pointer; /* Cursor ao passar por cima */
+    transition: background-color 0.3s ease; /* Transição suave */
+    margin-left: 10px;
+}
+
+#heatmapButton:hover {
+    background-color: #6b6b6b; /* Cor de fundo azul mais escura ao passar o mouse */
+}
+
+/* Estilo para o contêiner do seletor de mês e do botão */
+#monthSelectorContainer {
+    display: none; /* Oculta por padrão */
+    margin-bottom: 20px; /* Adiciona espaço na parte inferior */
+    margin-top: 20px;
+}
+
+/* Estilo para o contêiner do heatmap */
+#heatmap-containerMes {
+    margin-top: 20px; /* Adiciona espaço na parte superior */
 }

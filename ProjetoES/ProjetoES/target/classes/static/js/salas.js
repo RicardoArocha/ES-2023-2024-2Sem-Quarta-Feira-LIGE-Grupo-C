@@ -67,9 +67,45 @@ function loadScheduleData() {
         .then(csvData => {
             scheduleData = parseCSV2(csvData).data;
             console.log("Dados dos horários carregados", scheduleData);
-            criarHeatmapMatriz();
+
+            loadHeatMapDias();
+            console.log(calcularSalasOcupadasMes(5, 2, "10:00:00", "10:30:00"));
+
         })
         .catch(error => console.error('Erro ao carregar os dados dos horários:', error));
+}
+
+function loadHeatMapDias() {
+
+    let heatmapVisibleDias = false; // Variável para rastrear se o heatmap está visível ou não
+
+    // Função para alternar entre mostrar e esconder o heatmap
+    function toggleHeatmap() {
+        if (heatmapVisibleDias) {
+            hideHeatmap();
+        } else {
+            showHeatmap();
+        }
+    }
+
+    // Função para mostrar o heatmap
+    function showHeatmap() {
+        criarHeatmapMatrizDias();
+        heatmapVisibleDias = true;
+        document.getElementById('showHeatmapButton').textContent = "Ocultar HeatMap Semanal";
+    }
+
+    // Função para esconder o heatmap
+    function hideHeatmap() {
+        // Remover o heatmap do DOM
+        const heatmapContainer = document.getElementById('heatmap-containerDias');
+        heatmapContainer.innerHTML = ""; // Remove todos os filhos do container
+
+        heatmapVisibleDias = false; // Correção aqui
+        document.getElementById('showHeatmapButton').textContent = "Visualizar HeatMap semanal";
+    }
+    // Adiciona um evento de clique ao botão para alternar o heatmap
+    document.getElementById('showHeatmapButton').addEventListener('click', toggleHeatmap);
 }
 
 // Processa dados CSV em um formato utilizável
@@ -420,7 +456,7 @@ function calculateSemesterWeek(dateStr, semesterStartStr) {
 }
 
 //calcula o nº de salas ocupadas dado um dia da semana e um intervalo de tempo (inicio e fim)
-function calcularSalasOcupadas(diaSemana, horaInicio, horaFim) {
+function calcularSalasOcupadasDias(diaSemana, horaInicio, horaFim) {
     const searchStartTime = convertTimeToMinutes(horaInicio);
     const searchEndTime = convertTimeToMinutes(horaFim);
 
@@ -447,29 +483,29 @@ function calcularSalasOcupadas(diaSemana, horaInicio, horaFim) {
 }
 
 // Função para criar o heatmap na forma de matriz
-function criarHeatmapMatriz() {
+function criarHeatmapMatrizDias() {
     const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
     const horas = Array.from({ length: 30 }, (_, index) => index + 8 * 2); // 8 horas (8 * 2 intervalos de meia hora)
 
-    const heatmapContainer = document.getElementById('heatmap-container');
+    const heatmapContainer = document.getElementById('heatmap-containerDias');
 
     // Cria uma tabela para representar o heatmap
     const heatmapTable = document.createElement('table');
-    heatmapTable.classList.add('heatmap-table');
+    heatmapTable.classList.add('heatmap-tableDias');
 
     // Cria uma linha para os rótulos dos dias da semana
     const diasLabelRow = document.createElement('tr');
-    diasLabelRow.classList.add('dias-label-row');
+    diasLabelRow.classList.add('dias-label-rowDias');
 
     // Cria uma célula vazia para o canto superior esquerdo
     const emptyCell = document.createElement('td');
-    emptyCell.classList.add('empty-cell');
+    emptyCell.classList.add('empty-cellDias');
     diasLabelRow.appendChild(emptyCell);
 
     // Adiciona os rótulos dos dias da semana
     for (const dia of diasDaSemana) {
         const diaLabelCell = document.createElement('td');
-        diaLabelCell.classList.add('dia-label-cell');
+        diaLabelCell.classList.add('dia-label-cellDias');
         diaLabelCell.textContent = dia;
         diasLabelRow.appendChild(diaLabelCell);
     }
@@ -479,23 +515,23 @@ function criarHeatmapMatriz() {
     // Cria as linhas e colunas da tabela
     for (const hora of horas) {
         const horaRow = document.createElement('tr');
-        horaRow.classList.add('heatmap-row');
+        horaRow.classList.add('heatmap-rowDias');
 
         // Adiciona o rótulo da hora para cada linha
         const horaLabelCell = document.createElement('td');
-        horaLabelCell.classList.add('hora-label-cell');
+        horaLabelCell.classList.add('hora-label-cellDias');
         const horaInicio = `${Math.floor(hora / 2)}:${(hora % 2) * 30}`.padStart(2, '0');
         horaLabelCell.textContent = horaInicio;
         horaRow.appendChild(horaLabelCell);
 
         for (const dia of diasDaSemana) {
             const salaCell = document.createElement('td');
-            salaCell.classList.add('heatmap-cell');
+            salaCell.classList.add('heatmap-cellDias');
 
             const horaInicio = `${Math.floor(hora / 2)}:${(hora % 2) * 30}`.padStart(2, '0');
             const horaFim = `${Math.floor((hora + 1) / 2)}:${((hora + 1) % 2) * 30}`.padStart(2, '0');
 
-            const salasOcupadas = calcularSalasOcupadas(dia, horaInicio, horaFim);
+            const salasOcupadas = calcularSalasOcupadasDias(dia, horaInicio, horaFim);
 
             // Define a cor do quadrado com base no número médio de salas ocupadas
             salaCell.style.backgroundColor = getColorForSalasOcupadas(salasOcupadas);
@@ -523,7 +559,7 @@ function getColorForSalasOcupadas(salasOcupadas) {
     // Define intervalos de salas ocupadas e suas cores correspondentes
 
     const colorRanges = [
-        { min: 0, max: 100, color: 'rgba(201, 252, 253, 0.7)' }, // Celeste Blue para até 100 salas
+        { min: 0, max: 100, color: 'rgba(181, 242, 253, 0.7)' }, // Celeste Blue para até 100 salas
         { min: 101, max: 200, color: 'rgba(181, 233, 253, 1) ' }, // Non-photo Blue para até 200 salas
         { min: 201, max: 300, color: 'rgba(161, 213, 253, 1) ' }, // Light Sky Blue para até 300 salas
         { min: 301, max: 400, color: 'rgba(142, 194, 254, 1) ' }, // Jordy Blue para até 400 salas
@@ -543,4 +579,168 @@ function getColorForSalasOcupadas(salasOcupadas) {
     // Retorna a cor com base no número de salas ocupadas
     return range ? `${range.color}${salasOcupadas / 2000})` : 'rgba(255, 255, 255, 0)'; // Cor branca para mais de 2000 salas
 }
+
+//funciona- testada
+function calcularSalasOcupadasMes(dia, mes, horaInicio, horaFim) {
+    const searchStartTime = convertTimeToMinutes(horaInicio);
+    const searchEndTime = convertTimeToMinutes(horaFim);
+
+    const horariosNoDia = scheduleData.filter(schedule => {
+        const dataAula = schedule['Data da aula'];
+        const [diaAula, mesAula, ano] = dataAula.split('/');
+        return parseInt(diaAula) === dia && parseInt(mesAula) === mes;
+    });
+
+    let salasOcupadas = 0;
+
+    for (const horario of horariosNoDia) {
+        const roomStartTime = convertTimeToMinutes(horario['Hora início da aula']);
+        const roomEndTime = convertTimeToMinutes(horario['Hora fim da aula']);
+
+        if (
+            // Se o horário de início da sala estiver dentro do intervalo de procura
+            (roomStartTime >= searchStartTime && roomStartTime < searchEndTime) ||
+            // Se o horário de término da sala estiver dentro do intervalo de procura
+            (roomEndTime > searchStartTime && roomEndTime <= searchEndTime) ||
+            // Se o intervalo de procura estiver completamente dentro do intervalo da sala
+            (searchStartTime <= roomStartTime && searchEndTime >= roomEndTime)
+        ) {
+            salasOcupadas++;
+        }
+    }
+    return salasOcupadas;
+}
+
+
+// Função para criar heatmap mensal selecionado pelo usuário
+function criarHeatmapMensalSelecionado() {
+    const monthSelect = document.getElementById('monthSelect');
+    const selectedMonth = parseInt(monthSelect.value);
+
+    // Remove o heatmap atual, se existir
+    const heatmapContainer = document.getElementById('heatmap-containerMes');
+    heatmapContainer.innerHTML = '';
+
+    // Cria o novo heatmap
+    criarHeatmapMatrizMensal(selectedMonth);
+}
+
+
+function diasNoMes(mes) {
+    return new Date(new Date().getFullYear(), mes, 0).getDate();
+}
+
+function criarHeatmapMatrizMensal(mes) {
+    // Verifica se o número do mês é válido (de 1 a 12)
+    if (mes < 1 || mes > 12) {
+        console.error("Número de mês inválido. O mês deve ser um número entre 1 e 12.");
+        return;
+    }
+
+    const diasDoMes = Array.from({ length: diasNoMes(mes) }, (_, index) => index + 1); // Obtém os dias do mês
+    const horas = Array.from({ length: 30 }, (_, index) => index + 8 * 2); // 8 horas (8 * 2 intervalos de meia hora)
+
+    const heatmapContainer = document.getElementById('heatmap-containerMes');
+
+    // Cria uma tabela para representar o heatmap
+    const heatmapTable = document.createElement('table');
+    heatmapTable.classList.add('heatmap-tableMes');
+
+    // Cria uma linha para os rótulos dos dias do mês
+    const diasLabelRow = document.createElement('tr');
+    diasLabelRow.classList.add('dias-label-rowMes');
+
+    // Cria uma célula vazia para o canto superior esquerdo
+    const emptyCell = document.createElement('td');
+    emptyCell.classList.add('empty-cellMes');
+    diasLabelRow.appendChild(emptyCell);
+
+    // Adiciona os rótulos dos dias do mês
+    for (const dia of diasDoMes) {
+        const diaLabelCell = document.createElement('td');
+        diaLabelCell.classList.add('dia-label-cellMes');
+        diaLabelCell.textContent = dia;
+        diasLabelRow.appendChild(diaLabelCell);
+    }
+
+    heatmapTable.appendChild(diasLabelRow);
+
+    // Cria as linhas e colunas da tabela
+    for (const hora of horas) {
+        const horaRow = document.createElement('tr');
+        horaRow.classList.add('heatmap-rowMes');
+
+        // Adiciona o rótulo da hora para cada linha
+        const horaLabelCell = document.createElement('td');
+        horaLabelCell.classList.add('hora-label-cellMes');
+        const horaInicio = `${Math.floor(hora / 2)}:${(hora % 2) * 30}`.padStart(2, '0');
+        horaLabelCell.textContent = horaInicio;
+        horaRow.appendChild(horaLabelCell);
+
+        for (const dia of diasDoMes) {
+            const salaCell = document.createElement('td');
+            salaCell.classList.add('heatmap-cellMes');
+
+            const horaInicio = `${Math.floor(hora / 2)}:${(hora % 2) * 30}`.padStart(2, '0');
+            const horaFim = `${Math.floor((hora + 1) / 2)}:${((hora + 1) % 2) * 30}`.padStart(2, '0');
+
+            const salasOcupadas = calcularSalasOcupadasMes(dia, mes, horaInicio, horaFim);
+
+            // Define a cor do quadrado com base no número médio de salas ocupadas
+            salaCell.style.backgroundColor = getColorForSalasOcupadasMes(salasOcupadas);
+
+            // Adiciona um evento de hover para exibir o número de salas ao passar o cursor sobre a célula
+            salaCell.addEventListener('mouseenter', () => {
+                salaCell.textContent = `${salasOcupadas}`;
+            });
+            salaCell.addEventListener('mouseleave', () => {
+                salaCell.textContent = ''; // Remove o texto ao retirar o cursor da célula
+            });
+
+            horaRow.appendChild(salaCell);
+        }
+
+        heatmapTable.appendChild(horaRow);
+    }
+
+    heatmapContainer.appendChild(heatmapTable);
+}
+
+function getColorForSalasOcupadasMes(salasOcupadas) {
+    // Define intervalos de salas ocupadas e suas cores correspondentes
+
+    const colorRanges = [
+        { min: 0, max: 5, color: 'rgba(181, 242, 253, 0.7)' }, 
+        { min: 6, max: 20, color: 'rgba(181, 233, 253, 1) ' }, 
+        { min: 21, max: 30, color: 'rgba(161, 213, 253, 1) ' }, 
+        { min: 31, max: 40, color: 'rgba(142, 194, 254, 1) ' }, 
+        { min: 41, max: 50, color: 'rgba(122, 174, 254, 1)' }, 
+        { min: 51, max: 60, color: 'rgba(102, 155, 254, 1) ' }, 
+        { min: 61, max: 70, color: 'rgba(82, 136, 254, 1)' }, 
+        { min: 71, max: 80, color: 'rgba(62, 116, 254, 1) ' }, 
+        { min: 81, max: 90, color: 'rgba(43, 97, 255, 1)' }, 
+        { min: 91, max: 100, color: 'rgba(23, 77, 255, 1) ' }, 
+        { min: 101, max: 200, color: 'rgba(3, 58, 255, 1)' } 
+    ];
+
+
+    // Encontra o intervalo de cores correspondente ao número de salas ocupadas
+    const range = colorRanges.find(range => salasOcupadas >= range.min && salasOcupadas <= range.max);
+
+    // Retorna a cor com base no número de salas ocupadas
+    return range ? `${range.color}${salasOcupadas / 2000})` : 'rgba(255, 255, 255, 0)'; // Cor branca para mais de 2000 salas
+}
+
+//Mostrar/Esconder HeatMap mensal
+function toggleHeatmapSelector() {
+    const monthSelectorContainer = document.getElementById('monthSelectorContainer');
+    const toggleButton = document.getElementById('toggleHeatmapButton');
+    if (monthSelectorContainer.style.display === 'none') {
+        monthSelectorContainer.style.display = 'block'; // Mostra o seletor de mês e o botão
+        toggleButton.textContent = 'Ocultar HeatMap mensal'; // Altera o texto do botão
+    } else {
+        monthSelectorContainer.style.display = 'none'; // Oculta o seletor de mês e o botão
+        toggleButton.textContent = 'Visualizar HeatMap mensal'; // Altera o texto do botão
+    }
+} 
 

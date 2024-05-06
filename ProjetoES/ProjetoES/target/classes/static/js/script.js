@@ -83,27 +83,48 @@ function createTable(headers, data) {
     // Remover duplicatas para garantir colunas únicas
     const uniqueHeaders = Array.from(new Set(headers)); // Elimina cabeçalhos duplicados
 
-    // Adiciona a coluna de ID
+    // Adiciona a coluna de ID e a coluna de ação
+    const columns = [{
+        title: "Apagar",
+        formatter: "buttonCross", // Usa um ícone de cruz fornecido pelo Tabulator para o botão de apagar
+        width: 100,
+        align: "center",
+        cellClick: function(e, cell) {
+            cell.getRow().delete(); // Apaga a linha ao clicar no botão
+        },
+        download: false,  // Evita que esta coluna seja incluída na exportação para CSV
+        headerSort: false  // Desativa a ordenação para esta coluna
+    }];
 
-    const columns = uniqueHeaders.map(header => ({
+    // Mapeia os cabeçalhos para as colunas
+    columns.push(...uniqueHeaders.map(header => ({
         title: header,
         field: header,
-        headerFilter: 'input'
-    }));
+        headerFilter: 'input',
+        download: true  // Permite que estas colunas sejam incluídas na exportação para CSV
+    })));
 
     // Configurações da Tabulator
     table = new Tabulator("#tableContainer", {
         data: data, // atribui os dados
         columns: columns, // atribui as colunas
+        selectable: 1, // Permite a seleção de até 1 linha
         layout: "fitData",
         pagination: "local",
         paginationSize: 10,
         paginationSizeSelector: [5, 10, 20, 50],
         movableColumns: true,
         resizableRows: true,
-        initialSort: [{ column: headers[0], dir: "asc" }]
+        initialSort: [{ column: headers[0], dir: "asc" }],
+        downloadDataFormatter: data => data,  // Formata os dados para download conforme necessário
+        downloadConfig: {
+            columnGroups: false,  // Desativa a inclusão de grupos de colunas
+            rowGroups: false      // Desativa a inclusão de grupos de linhas
+        }
     });
 }
+
+
 
 // Função chamada quando o botão 'Substituir' é clicado
 function markSubstitution(data) {

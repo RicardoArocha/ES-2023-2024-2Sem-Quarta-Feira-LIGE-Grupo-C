@@ -1,9 +1,10 @@
 let table;
 let roomData = []; // Dados das salas
 let scheduleData = []; // Dados dos horários
+
 // Evento para inicializar a página
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('csvFileInput').addEventListener('change', handleFileSelect2, false);
     loadRoomData();
     loadScheduleData();
@@ -36,7 +37,7 @@ function handleFileSelect2(event) {
 // Lê e processa o arquivo CSV carregado
 function parseFile2(file) {
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         const contents = e.target.result;
         const data = parseCSV2(contents);
         createTable(data.headers, data.data);
@@ -52,7 +53,7 @@ function loadRoomData() {
         .then(csvData => {
             const parsedData = parseCSV2(csvData); // Aqui é onde você deve capturar os dados parseados
             roomData = parsedData.data; // Agora roomData é apenas o array 'data'
-            if (parsedData.headers && parsedData.data) { // Certifique-se de que ambos estão definidos
+            if(parsedData.headers && parsedData.data) { // Certifique-se de que ambos estão definidos
                 createTable(parsedData.headers, parsedData.data);
             }
         })
@@ -67,7 +68,6 @@ function loadScheduleData() {
         .then(csvData => {
             scheduleData = parseCSV2(csvData).data;
             console.log("Dados dos horários carregados", scheduleData);
-            criarHeatmapMatriz();
         })
         .catch(error => console.error('Erro ao carregar os dados dos horários:', error));
 }
@@ -122,7 +122,7 @@ function convertTimeToMinutes(timeString) {
 function resetFilters() {
     document.getElementById('startTime').value = '';
     document.getElementById('dayOfWeek').value = '';
-    if (table) {
+    if(table) {
         table.clearFilter(true); // remove filtros, mas mantém os dados da tabela
         table.setData(roomData); // redefine os dados da tabela para o conjunto de dados original
     }
@@ -132,18 +132,25 @@ function resetFilters() {
 function createTable(headers, data) {
     if (!headers || !data) {
         console.error('Dados ou cabeçalhos indefinidos para criar a tabela');
-        return; // Sai da função se headers ou data não estiverem definidos
+        return;
     }
 
-    // Adiciona uma coluna de ação com botões para marcar a substituição como a primeira coluna
     const columns = [{
         title: "Ações",
         headerSort: false,
-        formatter: function (cell, formatterParams) {
+        formatter: function(cell, formatterParams) {
             const button = document.createElement("button");
-            button.textContent = "Marcar Substituição";
-            button.onclick = function () {
-                confirmSubstitution(cell.getRow().getData());
+            button.textContent = localStorage.getItem("substitutionID") ? "Marcar Substituição" : "Marcar Aula";
+            button.onclick = function() {
+                const rowData = cell.getRow().getData();
+                localStorage.setItem("selectedRow", JSON.stringify(rowData));
+                console.log(button.textContent + " selecionada:", rowData);
+                if (localStorage.getItem("substitutionID")) {
+                    confirmSubstitution(rowData);
+                } else {
+                    openAddClassModal();
+                    console.log("Aberto o modal de adição de aula");
+                }
             };
             return button;
         },
@@ -151,7 +158,6 @@ function createTable(headers, data) {
         hozAlign: "center",
     }];
 
-    // Adiciona as colunas restantes ao array 'columns'
     headers.forEach(header => {
         columns.push({
             title: header,
@@ -160,7 +166,6 @@ function createTable(headers, data) {
         });
     });
 
-    // Configura a tabela com as colunas e os dados
     table = new Tabulator("#tableContainer", {
         data: data,
         columns: columns,
@@ -177,11 +182,13 @@ function createTable(headers, data) {
 
 
 
+
+
 // Carrega os dados atualizados para o servidor
 function uploadFile2() {
     var fileInput = document.getElementById('csvFileInput');
     var file = fileInput.files[0];
-
+    
     var formData = new FormData();
     formData.append('file', file, 'caracterizacaodassalas.csv');
 
@@ -189,18 +196,18 @@ function uploadFile2() {
         method: 'POST',
         body: formData
     })
-        .then(response => {
-            if (response.ok) {
-                alert('Arquivo de salas salvo com sucesso.');
-                loadRoomData(); // Recarregar os dados da sala após o sucesso do upload
-            } else {
-                throw new Error('Falha ao salvar o arquivo de salas.');
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao salvar o arquivo de salas:', error);
-            alert('Erro ao salvar o arquivo de salas.');
-        });
+    .then(response => {
+        if(response.ok) {
+            alert('Arquivo de salas salvo com sucesso.');
+            loadRoomData(); // Recarregar os dados da sala após o sucesso do upload
+        } else {
+            throw new Error('Falha ao salvar o arquivo de salas.');
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao salvar o arquivo de salas:', error);
+        alert('Erro ao salvar o arquivo de salas.');
+    });
 }
 // Criação do modal HTML
 // Lista de características das salas
@@ -295,7 +302,7 @@ function confirmSubstitution(rowData) {
 
     openModal(); // Abre o modal para permitir substituição
 }
-
+ 
 
 // Função para submeter a substituição
 // Função para submeter a substituição
@@ -306,6 +313,7 @@ function submitSubstitution(event) {
     const formData = new FormData(form);
 
     const selectedRow = JSON.parse(localStorage.getItem("selectedRow")); // Linha selecionada
+    console.log(selectedRow);
     const selectedID = localStorage.getItem("substitutionID"); // ID do `localStorage`
 
     const rowToUpdate = scheduleData.find(row => row["ID"] === selectedID); // Encontra a linha pelo ID
@@ -327,7 +335,7 @@ function submitSubstitution(event) {
         const selectedCharacteristics = Array.from(
             formData.getAll("room-attributes")
         ).join(", "); // Converte para uma string separada por vírgulas
-
+        
         rowToUpdate["Características da sala pedida para a aula"] = selectedCharacteristics; // Preenche o campo com as características
 
         saveScheduleToCSV(); // Salva o arquivo CSV atualizado
@@ -356,53 +364,68 @@ function formatDate(dateStr) {
     }
     return dateStr; // Retorna como está se não puder formatar
 }
-/**
- * 
- */
+//////////////////////////////////////////////////////////////////////////////////77
+
+
+
+
+
+
+// Função para salvar o CSV com a formatação correta
+function loadCSVHeaders(csvData) {
+    const rows = csvData.trim().split('\n');
+    const headers = rows[0].split(';').map(header => header.trim());
+    return headers;
+}
+
 // Função para salvar o CSV com a formatação correta
 function saveScheduleToCSV() {
-    const headers = [
-        "ID", "Curso", "Unidade Curricular", "Número de Inscritos no Turno", "Turno", "Turma",
-        "Dia da semana", "Hora início da aula", "Hora fim da aula", "Data da aula",
-        "Características da sala pedida para a aula", "Sala atribuída à aula",
-        "Semana do Ano", "Semana do 1º Semestre", "Semana do 2º Semestre"
-    ]; // Ordem correta dos cabeçalhos
+    fetch('/HorarioDeExemploAtualizado.csv')
+        .then(response => response.text())
+        .then(csvData => {
+            // Carrega os cabeçalhos dinamicamente do arquivo CSV de exemplo
+            const headers = loadCSVHeaders(csvData);
+            console.log(headers);
+            // Cria o conteúdo CSV com os cabeçalhos dinâmicos
+            const csvContent = [
+                headers.join(";"), // Cabeçalho
+                ...scheduleData.map(row => {
+                    return headers.map(header => {
+                        let value = row[header] || "";
 
-    const csvContent = [
-        headers.join(";"), // Cabeçalho
-        ...scheduleData.map(row => {
-            return headers.map(header => {
-                let value = row[header] || "";
+                        // Formatando campos específicos
+                        if (header === "Hora início da aula" || header === "Hora fim da aula") {
+                            value = formatTime(value); // Formatar hora para HH:MM:SS
+                        } else if (header === "Data da aula") {
+                            value = formatDate(value); // Formatar data para DD/MM/AAAA
+                        }
 
-                // Formatando campos específicos
-                if (header === "Hora início da aula" || header === "Hora fim da aula") {
-                    value = formatTime(value); // Formatar hora para HH:MM:SS
-                } else if (header === "Data da aula") {
-                    value = formatDate(value); // Formatar data para DD/MM/AAAA
+                        return value;
+                    }).join(";"); // Mantém o formato correto para o CSV
+                })
+            ].join("\n");
+
+            // Cria um Blob com o conteúdo CSV
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+            // Cria um FormData com o Blob e envia para o servidor
+            const formData = new FormData();
+            formData.append('file', blob, 'HorarioDeExemploAtualizado.csv');
+
+            fetch('/upload-horarios', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Horário atualizado com sucesso.");
+                } else {
+                    throw new Error("Erro ao salvar o horário.");
                 }
-
-                return value;
-            }).join(";"); // Mantém o formato correto para o CSV
+            })
+            .catch(error => console.error("Erro ao salvar o horário:", error));
         })
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-
-    const formData = new FormData();
-    formData.append('file', blob, 'HorarioDeExemploAtualizado.csv');
-
-    fetch('/upload-horarios', {
-        method: 'POST',
-        body: formData,
-    })
-        .then(response => {
-            if (response.ok) {
-                console.log("Horário atualizado com sucesso.");
-            } else {
-                throw new Error("Erro ao salvar o horário.");
-            }
-        })
-        .catch(error => console.error("Erro ao salvar o horário:", error));
+        .catch(error => console.error('Erro ao carregar os cabeçalhos do arquivo CSV:', error));
 }
 function calculateWeekOfYear(dateStr) {
     const date = new Date(dateStr.split('/').reverse().join('-'));
@@ -419,7 +442,7 @@ function calculateSemesterWeek(dateStr, semesterStartStr) {
     return (weekNo < 1 || weekNo > 18) ? "-" : weekNo;
 }
 
-//calcula o nº de salas ocupadas dado um dia da semana e um intervalo de tempo (inicio e fim)
+
 function calcularSalasOcupadas(diaSemana, horaInicio, horaFim) {
     const searchStartTime = convertTimeToMinutes(horaInicio);
     const searchEndTime = convertTimeToMinutes(horaFim);
@@ -543,4 +566,159 @@ function getColorForSalasOcupadas(salasOcupadas) {
     // Retorna a cor com base no número de salas ocupadas
     return range ? `${range.color}${salasOcupadas / 2000})` : 'rgba(255, 255, 255, 0)'; // Cor branca para mais de 2000 salas
 }
+const addClassModal=`<div id="addClassModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeAddClassModal()">&times;</span>
+    <h2>Adicionar Nova Aula</h2>
+    <form id="addClassForm" onsubmit="submitNewClass(event)">
+
+      <label for="course">Curso:</label>
+      <input type="text" id="course" name="course" required>
+
+      <label for="subject">Unidade Curricular:</label>
+      <input type="text" id="subject" name="subject" required>
+
+      <label for="shift">Turno:</label>
+      <input type="text" id="shift" name="shift" required>
+
+      <label for="class">Turma:</label>
+      <input type="text" id="class" name="class" required>
+
+      <label for="enrolled">Inscritos no turno:</label>
+      <input type="number" id="enrolled" name="enrolled" required>
+
+      <!-- Reutilizando o mesmo estilo de seleção de dia da semana do outro modal -->
+      <label for="week-day">Dia da semana:</label>
+      <select id="week-day" name="week-day" required>
+        <option value="Seg">Segunda-feira</option>
+        <option value="Ter">Terça-feira</option>
+        <option value="Qua">Quarta-feira</option>
+        <option value="Qui">Quinta-feira</option>
+        <option value="Sex">Sexta-feira</option>
+        <option value="Sab">Sábado</option>
+        <option value="Dom">Domingo</option>
+      </select>
+
+      <label for="start-time">Hora início da aula:</label>
+      <input type="time" id="start-time" name="start-time" required>
+
+      <label for="end-time">Hora fim da aula:</label>
+      <input type="time" id="end-time" name="end-time" required>
+
+      <label for="date">Data da aula:</label>
+      <input type="date" id="date" name="date" required>
+
+      <!-- Selecção de características da sala -->
+      <label for="room-features">Características da sala pedida para a aula:</label>
+      <select id="room-features" name="room-features" multiple>
+        ${roomCharacteristicsList.map(char => `<option value="${char}">${char}</option>`).join('')}
+      </select>
+
+      <button type="submit">Adicionar Aula</button>
+    </form>
+  </div>
+</div>`;
+document.body.insertAdjacentHTML('beforeend', addClassModal);
+function openAddClassModal() {
+    document.getElementById("addClassModal").style.display = "block";
+}
+
+function closeAddClassModal() {
+    document.getElementById("addClassModal").style.display = "none";
+}
+
+// Função chamada ao clicar no botão "Marcar Aula"
+function markClass(rowData) {
+    openAddClassModal();
+    const selectedRowData = JSON.parse(localStorage.getItem("selectedRow"));
+    console.log("Aula selecionada para marcação:", selectedRowData);
+}
+
+// Adicionando a função de submissão de nova aula
+function submitNewClass(event) {
+    event.preventDefault();
+    const form = document.getElementById("addClassForm");
+    const formData = new FormData(form);
+    const selectedRow = JSON.parse(localStorage.getItem("selectedRow")); // Linha selecionada
+    // Obter o próximo ID de horário
+    fetchHighestId().then(highestId => {
+        const selectedCharacteristics = Array.from(
+            formData.getAll("room-attributes")
+        ).join(", "); // Converte para uma string separada por vírgulas
+        
+        // Correção para lidar com o retorno de formData.get("room-features")
+        const roomFeatures = formData.getAll("room-features");
+        const roomFeaturesString = Array.isArray(roomFeatures) ? roomFeatures.join(", ") : roomFeatures;
+
+        const newId = highestId + 1;
+        const newRow = {
+            "ID": newId,
+            "Semana do Ano": calculateWeekOfYear(formData.get("date")),
+            "Semana do 1º Semestre": calculateSemesterWeek(formData.get("date"), '2022-10-01'),
+            "Semana do 2º Semestre": calculateSemesterWeek(formData.get("date"), '2023-02-01'),
+            "Curso": formData.get("course"),
+            "Unidade Curricular": formData.get("subject"),
+            "Turno": formData.get("shift"),
+            "Turma": formData.get("class"),
+            "Inscritos no turno": formData.get("enrolled"),
+            "Dia da semana": formData.get("week-day"),
+            "Hora início da aula": formData.get("start-time"),
+            "Hora fim da aula": formData.get("end-time"),
+            "Data da aula": formData.get("date"),
+            "Características da sala pedida para a aula": roomFeaturesString, // Utiliza a variável corrigida aqui
+            "Sala atribuída à aula": selectedRow["Nome sala"], // Defina a sala atribuída conforme necessário
+        };
+
+        // Adiciona a nova linha ao CSV
+        addToScheduleCSV(newRow);
+        closeAddClassModal();
+        alert("Aula adicionada com sucesso!");
+    });
+}
+
+
+
+// Função para buscar o maior ID atual no arquivo CSV
+function fetchHighestId() {
+    return fetch('/HorarioDeExemploAtualizado.csv')
+        .then(response => response.text())
+        .then(csvData => {
+            const rows = csvData.trim().split('\n').map(row => row.split(';'));
+            const ids = rows.slice(1).map(row => parseInt(row[0])); // Supondo que o ID seja a primeira coluna
+            return Math.max(...ids);
+        });
+}
+
+// Função para adicionar a nova linha ao arquivo CSV
+// Função para adicionar a nova linha ao arquivo CSV
+function addToScheduleCSV(newRow) {
+    // Obter os dados do arquivo CSV existente
+    fetch('/HorarioDeExemploAtualizado.csv')
+        .then(response => response.text())
+        .then(csvContent => {
+            // Obter cabeçalhos do CSV existente
+            const headers = loadCSVHeaders(csvContent);
+
+            // Preparar a nova linha usando a ordem dos cabeçalhos
+            const newRowValues = headers.map(header => newRow[header] || ""); // Garante que todos os cabeçalhos tenham um valor ou sejam vazios se não estiverem presentes em newRow
+
+            // Adicionar a nova linha ao conteúdo CSV existente
+            const newCsvContent = `${csvContent}\n${newRowValues.join(";")}`;
+
+            // Enviar o conteúdo CSV atualizado para o servidor
+            const blob = new Blob([newCsvContent], { type: 'text/csv;charset=utf-8;' });
+            const formData = new FormData();
+            formData.append('file', blob, 'HorarioDeExemploAtualizado.csv');
+
+            fetch('/upload-horarios', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (!response.ok) throw new Error("Erro ao adicionar a aula.");
+                alert("Aula adicionada com sucesso e CSV atualizado corretamente.");
+            }).catch(error => console.error("Erro ao salvar a aula no arquivo:", error));
+        })
+        .catch(error => console.error("Erro ao ler o arquivo CSV existente:", error));
+}
+
 

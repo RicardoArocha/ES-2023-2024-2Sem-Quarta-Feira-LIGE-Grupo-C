@@ -13,9 +13,18 @@
     <nav class="hub-nav">
         <ul class="hub-nav__list">
             <li class="hub-nav__item"><a href="/horarios" class="hub-nav__link">Horários</a></li>
-            
             <li class="hub-nav__item"><a href="/salas" class="hub-nav__link">Salas</a></li>
         </ul>
     </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const salaLink = document.querySelector('.hub-nav__link[href="/salas"]');
+            if (salaLink) {
+                salaLink.addEventListener('click', function () {
+                    localStorage.removeItem("substitutionID");
+                });
+            }
+        });
+    </script>
 </body>
 </html>

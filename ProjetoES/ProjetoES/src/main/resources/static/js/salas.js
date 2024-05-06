@@ -68,6 +68,7 @@ function loadScheduleData() {
         .then(csvData => {
             scheduleData = parseCSV2(csvData).data;
             console.log("Dados dos horários carregados", scheduleData);
+            criarHeatmapMatriz();
         })
         .catch(error => console.error('Erro ao carregar os dados dos horários:', error));
 }
@@ -662,9 +663,9 @@ function submitNewClass(event) {
             "Turma": formData.get("class"),
             "Inscritos no turno": formData.get("enrolled"),
             "Dia da semana": formData.get("week-day"),
-            "Hora início da aula": formData.get("start-time"),
-            "Hora fim da aula": formData.get("end-time"),
-            "Data da aula": formData.get("date"),
+            "Hora início da aula": formatTime(formData.get("start-time")),
+            "Hora fim da aula": formatTime(formData.get("end-time")),
+            "Data da aula": formatDate(formData.get("date")),
             "Características da sala pedida para a aula": roomFeaturesString, // Utiliza a variável corrigida aqui
             "Sala atribuída à aula": selectedRow["Nome sala"], // Defina a sala atribuída conforme necessário
         };

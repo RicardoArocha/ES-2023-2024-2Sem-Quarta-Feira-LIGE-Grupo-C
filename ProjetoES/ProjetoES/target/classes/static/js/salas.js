@@ -506,7 +506,7 @@ function  calcularSalasOcupadasDias (diaSemana, horaInicio, horaFim) {
 
 // Função para criar o heatmap na forma de matriz
 function criarHeatmapMatrizDias() {
-    const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
+    const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
     const horas = Array.from({ length: 30 }, (_, index) => index + 8 * 2); // 8 horas (8 * 2 intervalos de meia hora)
 
     const heatmapContainer = document.getElementById('heatmap-containerDias');

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização de Conflitualidade</title>
+    <link rel="stylesheet" href="css/conflitualidade.css">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Conflitualidade das Aulas</h1>
+    </header>
+    <section>
+        <div>
+            <label for="course-filter">Curso:</label>
+            <input type="text" id="course-filter">
+        </div>
+        <div>
+            <label for="subject-filter">UC:</label>
+            <input type="text" id="subject-filter">
+        </div>
+        <div>
+            <label for="date-start">De:</label>
+            <input type="date" id="date-start">
+            <label for="date-end">Até:</label>
+            <input type="date" id="date-end">
+        </div>
+        <button id="apply-filters">Aplicar Filtros</button>
+    </section>
+    <div id="graph-container"></div>
+
+    <script src="js/conflitualidade.js"></script>
+</body>
+</html>

@@ -596,6 +596,44 @@ function criarHeatmapMatrizDias() {
 
     heatmapContainer.appendChild(heatmapTable);
 
+    // Create legend element
+    const legendContainer = document.createElement('div');
+    legendContainer.classList.add('legend-container');
+
+    // Create legend title
+    const legendTitle = document.createElement('div');
+    legendTitle.textContent = 'Legend:';
+    legendTitle.classList.add('legend-title');
+    legendContainer.appendChild(legendTitle);
+
+    // Create legend items
+    const legendItems = document.createElement('div');
+    legendItems.classList.add('legend-items');
+
+    // Iterate through color ranges and create legend items
+    const colorRanges = getColorRangesWeek();
+
+    colorRanges.forEach(range => {
+        const legendItem = document.createElement('div');
+        legendItem.classList.add('legend-item');
+
+        // Create colored square
+        const colorSquare = document.createElement('div');
+        colorSquare.style.backgroundColor = range.color;
+        colorSquare.classList.add('color-square');
+        legendItem.appendChild(colorSquare);
+
+        // Create range text
+        const rangeText = document.createElement('span');
+        rangeText.textContent = `${range.min} - ${range.max}`;
+        legendItem.appendChild(rangeText);
+
+        legendItems.appendChild(legendItem);
+    });
+
+    legendContainer.appendChild(legendItems);
+
+    heatmapContainer.appendChild(legendContainer);
 }
 
 // Função para definir a cor com base no número de salas ocupadas
@@ -623,6 +661,23 @@ function getColorForSalasOcupadas(salasOcupadas) {
     // Retorna a cor com base no número de salas ocupadas
     return range ? `${range.color}${salasOcupadas / 2000})` : 'rgba(255, 255, 255, 0)'; // Cor branca para mais de 2000 salas
 }
+
+function getColorRangesWeek() {
+    return [
+        { min: 0, max: 100, color: 'rgba(181, 242, 253, 0.7)' }, // Celeste Blue for up to 100 rooms
+        { min: 101, max: 200, color: 'rgba(181, 233, 253, 1)' }, // Non-photo Blue for up to 200 rooms
+        { min: 201, max: 300, color: 'rgba(161, 213, 253, 1)' }, // Light Sky Blue for up to 300 rooms
+        { min: 301, max: 400, color: 'rgba(142, 194, 254, 1)' }, // Jordy Blue for up to 400 rooms
+        { min: 401, max: 500, color: 'rgba(122, 174, 254, 1)' }, // Jordy Blue 2 for up to 500 rooms
+        { min: 501, max: 600, color: 'rgba(102, 155, 254, 1)' }, // Cornflower Blue for up to 600 rooms
+        { min: 601, max: 700, color: 'rgba(82, 136, 254, 1)' }, // Cornflower Blue 2 for up to 700 rooms
+        { min: 701, max: 800, color: 'rgba(62, 116, 254, 1)' }, // Blue Crayola for up to 800 rooms
+        { min: 801, max: 900, color: 'rgba(43, 97, 255, 1)' }, // Neon Blue for up to 900 rooms
+        { min: 901, max: 1000, color: 'rgba(23, 77, 255, 1)' }, // RISD Blue for up to 1000 rooms
+        { min: 1001, max: 2000, color: 'rgba(3, 58, 255, 1)' } // Palatinate Blue for up to 2000 rooms
+    ];
+}
+
 const addClassModal=`<div id="addClassModal" class="modal" style="display: none;">
   <div class="modal-content">
     <span class="close-btn" onclick="closeAddClassModal()">&times;</span>
@@ -826,7 +881,6 @@ function criarHeatmapMensalSelecionado() {
 function diasNoMes(mes) {
     return new Date(new Date().getFullYear(), mes, 0).getDate();
 }
-
 function criarHeatmapMatrizMensal(mes) {
     // Verifica se o número do mês é válido (de 1 a 12)
     if (mes < 1 || mes > 12) {
@@ -901,11 +955,50 @@ function criarHeatmapMatrizMensal(mes) {
     }
 
     heatmapContainer.appendChild(heatmapTable);
+
+    // Create legend element
+    const legendContainer = document.createElement('div');
+    legendContainer.classList.add('legend-container');
+
+    // Create legend title
+    const legendTitle = document.createElement('div');
+    legendTitle.textContent = 'Legend:';
+    legendTitle.classList.add('legend-title');
+    legendContainer.appendChild(legendTitle);
+
+    // Create legend items
+    const legendItems = document.createElement('div');
+    legendItems.classList.add('legend-items');
+
+    // Iterate through color ranges and create legend items
+    const colorRanges = getColorRangesMes(); // Define your color ranges function here
+
+    colorRanges.forEach(range => {
+        const legendItem = document.createElement('div');
+        legendItem.classList.add('legend-item');
+
+        // Create colored square
+        const colorSquare = document.createElement('div');
+        colorSquare.style.backgroundColor = range.color;
+        colorSquare.classList.add('color-square');
+        legendItem.appendChild(colorSquare);
+
+        // Create range text
+        const rangeText = document.createElement('span');
+        rangeText.textContent = `${range.min} - ${range.max}`;
+        legendItem.appendChild(rangeText);
+
+        legendItems.appendChild(legendItem);
+    });
+
+    legendContainer.appendChild(legendItems);
+
+    heatmapContainer.appendChild(legendContainer);
 }
 
 function getColorForSalasOcupadasMes(salasOcupadas) {
     // Define intervalos de salas ocupadas e suas cores correspondentes
-
+   
     const colorRanges = [
         { min: 0, max: 5, color: 'rgba(181, 242, 253, 0.7)' }, 
         { min: 6, max: 20, color: 'rgba(181, 233, 253, 1) ' }, 
@@ -919,7 +1012,7 @@ function getColorForSalasOcupadasMes(salasOcupadas) {
         { min: 91, max: 100, color: 'rgba(23, 77, 255, 1) ' }, 
         { min: 101, max: 200, color: 'rgba(3, 58, 255, 1)' } 
     ];
-
+    
 
     // Encontra o intervalo de cores correspondente ao número de salas ocupadas
     const range = colorRanges.find(range => salasOcupadas >= range.min && salasOcupadas <= range.max);
@@ -927,6 +1020,23 @@ function getColorForSalasOcupadasMes(salasOcupadas) {
     // Retorna a cor com base no número de salas ocupadas
     return range ? `${range.color}${salasOcupadas / 2000})` : 'rgba(255, 255, 255, 0)'; // Cor branca para mais de 2000 salas
 }
+
+function getColorRangesMes() {
+    return [
+        { min: 0, max: 5, color: 'rgba(181, 242, 253, 0.7)' }, 
+        { min: 6, max: 20, color: 'rgba(181, 233, 253, 1)' }, 
+        { min: 21, max: 30, color: 'rgba(161, 213, 253, 1)' }, 
+        { min: 31, max: 40, color: 'rgba(142, 194, 254, 1)' }, 
+        { min: 41, max: 50, color: 'rgba(122, 174, 254, 1)' }, 
+        { min: 51, max: 60, color: 'rgba(102, 155, 254, 1)' }, 
+        { min: 61, max: 70, color: 'rgba(82, 136, 254, 1)' }, 
+        { min: 71, max: 80, color: 'rgba(62, 116, 254, 1)' }, 
+        { min: 81, max: 90, color: 'rgba(43, 97, 255, 1)' }, 
+        { min: 91, max: 100, color: 'rgba(23, 77, 255, 1)' }, 
+        { min: 101, max: 200, color: 'rgba(3, 58, 255, 1)' } 
+    ];
+}
+
 
 //Mostrar/Esconder HeatMap mensal
 function toggleHeatmapSelector() {

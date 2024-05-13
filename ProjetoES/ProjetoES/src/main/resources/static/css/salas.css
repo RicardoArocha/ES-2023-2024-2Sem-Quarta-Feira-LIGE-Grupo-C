@@ -248,3 +248,40 @@ body {
 #heatmap-containerMes {
     margin-top: 20px; /* Adiciona espaço na parte superior */
 }
+/* Styles for legend container */
+.legend-container {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* Styles for legend title */
+.legend-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Styles for legend items container */
+.legend-items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Styles for each legend item */
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 15px; /* Increased spacing between items */
+}
+
+/* Styles for color square */
+.color-square {
+    width: 18px; /* Slightly larger square */
+    height: 18px; /* Slightly larger square */
+    margin-right: 5px; /* Increased spacing between square and text */
+    border-radius: 3px; /* Slightly rounded corners */
+}
+
+/* Additional styles for range text */
+.range-text {
+    font-size: 12px;
+}

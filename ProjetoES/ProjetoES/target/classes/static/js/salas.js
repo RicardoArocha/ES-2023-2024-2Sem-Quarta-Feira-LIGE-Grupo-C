@@ -128,6 +128,11 @@ function checkAvailability() {
     const searchDate = dayInput.split('-').reverse().join('/');
     const searchStartTime = convertTimeToMinutes(startTimeInput);
 
+       // Check if startTimeInput or dayInput is empty or invalid
+       if (!startTimeInput.trim() || !dayInput.trim()) {
+        throw new Error("Please provide a valid start time and day of the week.");
+    }
+
     const relevantSchedules = scheduleData.filter(schedule => {
         let roomBookedDate = schedule['Data da aula'];
         let roomStartTime = convertTimeToMinutes(schedule['Hora início da aula']);
@@ -140,6 +145,9 @@ function checkAvailability() {
 
 // Atualiza a tabela com salas disponíveis
 function updateTableWithAvailability(relevantSchedules) {
+    if (!relevantSchedules) {
+        throw new Error("relevantSchedules is null or undefined.");
+    }
     let availableRooms = roomData.filter(room => {
         return !relevantSchedules.some(schedule => schedule['Sala atribuída à aula'] === room['Nome sala']);
     });
@@ -155,11 +163,22 @@ function convertTimeToMinutes(timeString) {
 
 // Redefine os filtros para o estado original
 function resetFilters() {
-    document.getElementById('startTime').value = '';
-    document.getElementById('dayOfWeek').value = '';
-    if(table) {
-        table.clearFilter(true); // remove filtros, mas mantém os dados da tabela
-        table.setData(roomData); // redefine os dados da tabela para o conjunto de dados original
+    const startTimeInput = document.getElementById('startTime');
+    const dayOfWeekInput = document.getElementById('dayOfWeek');
+    
+    // Check if the required elements exist
+    if (!startTimeInput || !dayOfWeekInput) {
+      throw new Error('Cannot find required input elements for resetFilters function.');
+    }
+  
+    // Reset the input values
+    startTimeInput.value = '';
+    dayOfWeekInput.value = '';
+  
+    // Check if the table exists
+    if (table) {
+      table.clearFilter(true); // remove filtros, mas mantém os dados da tabela
+      table.setData(roomData); // redefine os dados da tabela para o conjunto de dados original
     }
 }
 
@@ -319,6 +338,9 @@ function closeModal() {
 
 // Função chamada ao clicar no botão "Marcar Substituição"
 function confirmSubstitution(rowData) {
+    if (rowData === undefined || rowData === null) {
+        return;
+      }
     // Obter informações para preencher o modal
     const selectedID = localStorage.getItem("substitutionID"); // ID recuperado
     const roomName = rowData['Nome sala']; // Sala
@@ -918,3 +940,28 @@ function toggleHeatmapSelector() {
         toggleButton.textContent = 'Visualizar HeatMap mensal'; // Altera o texto do botão
     }
 } 
+
+module.exports = {
+    checkPreselectedSchedule,
+    handleFileSelect2,
+    parseFile2,
+    loadRoomData,
+    loadScheduleData,
+    parseCSV2,
+    updateTableWithAvailability,
+    convertTimeToMinutes,
+    createTable,
+    uploadFile2,
+    checkAvailability,
+    openModal,
+    closeModal,
+    confirmSubstitution,
+    submitSubstitution,
+    formatTime,
+    formatDate,
+    calculateWeekOfYear,
+    calculateSemesterWeek,
+    saveScheduleToCSV,
+    resetFilters,
+
+};

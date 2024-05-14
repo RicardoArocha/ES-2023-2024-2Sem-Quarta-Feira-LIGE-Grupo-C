@@ -1149,9 +1149,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const height = 600;
   
     const networkGraphContainer = d3.select("#networkGraphContainer");
+    const containerWidth = networkGraphContainer.node().getBoundingClientRect().width;
+    const containerHeight = window.innerHeight * 0.7; // You can adjust this as needed
+    
     networkGraphContainer.selectAll("*").remove(); // Clear the container before adding new graph
-  
-    const svg = networkGraphContainer.append("svg").attr("width", width).attr("height", height);
+    const svg = networkGraphContainer.append("svg")
+        .attr("width", containerWidth)
+        .attr("height", containerHeight);
   
     const link = svg.selectAll(".link").data(graphData.links).enter().append("line").attr("class", "link").style("stroke", "#aaa");
   

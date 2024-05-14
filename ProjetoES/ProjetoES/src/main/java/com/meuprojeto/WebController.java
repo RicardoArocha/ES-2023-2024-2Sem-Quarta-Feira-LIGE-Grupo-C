@@ -1,15 +1,18 @@
 package com.meuprojeto;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -85,7 +88,7 @@ public class WebController {
 
     private static final String CSV_SALAS_PATH = "src/main/resources/caracterizacaodasSalas.csv";
     private static final String CSV_HORARIO_PATH = "src/main/resources/HorarioDeExemploAtualizado.csv";
-
+    private static final String CSV_NEW_PATH = "src/main/resources/sugestaoAlocacoes.csv";
     private static final String CSV_Horarios = "src/main/resources/HorarioDeExemploAtualizado.csv";
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
 
@@ -188,4 +191,90 @@ public class WebController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo vazio não pode ser guardado");
         }
     }
+    @PostMapping("/save-csv")
+public ResponseEntity<String> saveCsvData(@RequestBody String csvData) {
+    try {
+        Path path = Paths.get(CSV_NEW_PATH);
+
+        // Ensure the directories exist
+        Files.createDirectories(path.getParent());  // This is safe to call, even if the directory already exists
+
+        // Use synchronized block to handle concurrent access, if you expect high concurrency consider a different locking mechanism
+        synchronized(this) {
+            // Check if the file exists to decide if we need to prepend headers
+            boolean fileExists = Files.exists(path);
+            StringBuilder dataToWrite = new StringBuilder();
+
+            // Add headers if the file does not exist
+            if (!fileExists) {
+                String initialData = "SubID;ID;Data da substituicao;Data antiga;Hora da substituicao;Hora antiga;Hora de fim da substituição;Sala atribuida;Sala antiga;Unidade curricular;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Características da sala pedida para a aula\n";
+                dataToWrite.append(initialData);
+            }
+            dataToWrite.append(csvData);
+
+            // Write to file, appending if file already exists or creating if it does not
+            Files.write(path, dataToWrite.toString().getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }
+
+        return ResponseEntity.ok("CSV data saved successfully.");
+    } catch (IOException e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().body("Failed to save CSV data: " + e.getMessage());
+    }
 }
+
+
+
+@GetMapping("/sugestaoAlocacoes.csv")
+public ResponseEntity<Resource> getScheduleFile5() {
+    String filePath = "src/main/resources/sugestaoAlocacoes.csv";
+    Path path = Paths.get(filePath);
+
+    try {
+        // Ensure the directories and file exist
+        if (Files.notExists(path)) {
+            Files.createDirectories(path.getParent());
+            String initialData = "SubID;ID;Data da substituicao;Data antiga;Hora da substituicao;Hora antiga;Hora de fim da substituição;Sala atribuida;Sala antiga;Unidade curricular;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Características da sala pedida para a aula\n";
+            Files.write(path, initialData.getBytes(StandardCharsets.UTF_8));
+        }
+
+        Resource file = new UrlResource(path.toUri());
+        if (file.exists() || file.isReadable()) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                    .body(file);
+        } else {
+            log.error("O arquivo " + filePath + " não foi encontrado ou não pode ser lido.");
+            return ResponseEntity.notFound().build();
+        }
+    } catch (IOException e) {
+        log.error("Erro ao acessar ou criar o arquivo: ", e);
+        return ResponseEntity.internalServerError().build();
+    }
+}
+
+
+
+@PostMapping("/upload-alocacoes")
+public ResponseEntity<String> handleAlocacoesUpload(@RequestParam("file") MultipartFile file) {
+    if (!file.isEmpty()) {
+        try {
+            Path path = Paths.get(System.getProperty("user.dir") + "/src/main/resources/sugestaoAlocacoes.csv");
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            return ResponseEntity.ok("Arquivo de alocações atualizado com sucesso.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o arquivo de alocações: " + e.getMessage());
+        }
+    } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo de alocações vazio não pode ser guardado");
+    }
+}
+
+
+
+
+
+}
+
+

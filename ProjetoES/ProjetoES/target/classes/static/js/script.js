@@ -83,44 +83,25 @@ function createTable(headers, data) {
     // Remover duplicatas para garantir colunas únicas
     const uniqueHeaders = Array.from(new Set(headers)); // Elimina cabeçalhos duplicados
 
-    // Adiciona a coluna de ID e a coluna de ação
-    const columns = [{
-        title: "Apagar",
-        formatter: "buttonCross", // Usa um ícone de cruz fornecido pelo Tabulator para o botão de apagar
-        width: 100,
-        align: "center",
-        cellClick: function(e, cell) {
-            cell.getRow().delete(); // Apaga a linha ao clicar no botão
-        },
-        download: false,  // Evita que esta coluna seja incluída na exportação para CSV
-        headerSort: false  // Desativa a ordenação para esta coluna
-    }];
+    // Adiciona a coluna de ID
 
-    // Mapeia os cabeçalhos para as colunas
-    columns.push(...uniqueHeaders.map(header => ({
+    const columns = uniqueHeaders.map(header => ({
         title: header,
         field: header,
-        headerFilter: 'input',
-        download: true  // Permite que estas colunas sejam incluídas na exportação para CSV
-    })));
+        headerFilter: 'input'
+    }));
 
     // Configurações da Tabulator
     table = new Tabulator("#tableContainer", {
         data: data, // atribui os dados
         columns: columns, // atribui as colunas
-        selectable: 1, // Permite a seleção de até 1 linha
         layout: "fitData",
         pagination: "local",
         paginationSize: 10,
         paginationSizeSelector: [5, 10, 20, 50],
         movableColumns: true,
         resizableRows: true,
-        initialSort: [{ column: headers[0], dir: "asc" }],
-        downloadDataFormatter: data => data,  // Formata os dados para download conforme necessário
-        downloadConfig: {
-            columnGroups: false,  // Desativa a inclusão de grupos de colunas
-            rowGroups: false      // Desativa a inclusão de grupos de linhas
-        }
+
     });
 }
 
@@ -317,4 +298,63 @@ function markSubstitutionByID() {
     } else {
         alert("Por favor, insira um ID válido."); // Alerta caso não seja inserido um ID
     }
+}
+// Função para apagar a aula pelo ID inserido
+function DeleteAulaByID() {
+    const inputID = document.getElementById('delete-id').value.trim(); // Pega o ID inserido no input
+
+    if (!inputID) {
+        alert('Por favor, insira um ID válido.');
+        return;
+    }
+
+    fetch('/HorarioDeExemploAtualizado.csv') // Supondo que o caminho está correto
+        .then(response => {
+            if (!response.ok) throw new Error("Falha ao acessar o arquivo.");
+            return response.text();
+        })
+        .then(csvData => {
+            const data = parseCSV(csvData); // Utiliza uma função existente para converter CSV em um objeto manipulável
+            const filteredData = data.data.filter(row => row.ID !== inputID); // Filtra a linha que não corresponde ao ID
+
+            if (data.data.length === filteredData.length) {
+                alert('ID não encontrado.');
+                return;
+            }
+
+            // Prepara os dados para serem salvos novamente
+            const updatedCSV = [data.headers.join(';'), ...filteredData.map(row => data.headers.map(header => row[header] || '').join(';'))].join('\n');
+
+            // Envia o CSV atualizado de volta para o servidor
+            saveUpdatedCSV(updatedCSV);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar ou processar o arquivo:', error);
+            alert("Erro ao processar o arquivo.");
+        });
+}
+
+// Função para salvar o CSV atualizado no servidor
+function saveUpdatedCSV(updatedCSV) {
+    const blob = new Blob([updatedCSV], { type: 'text/csv;charset=utf-8;' });
+    const formData = new FormData();
+    formData.append('file', blob, 'HorarioDeExemploAtualizado.csv');
+
+    fetch('/upload-horarios', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Aula apagada com sucesso!");
+            // Recarrega os dados ou atualiza a tabela conforme necessário
+            fetchScheduleFile(); // Esta função precisa ser definida ou adaptada conforme seu uso
+        } else {
+            throw new Error('Falha ao salvar o arquivo atualizado.');
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao salvar o arquivo atualizado:', error);
+        alert("Erro ao salvar o arquivo atualizado.");
+    });
 }

@@ -1,7 +1,6 @@
 ID;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Apagar;Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Características da sala pedida para a aula;Sala atribuída à aula
-1;49;14;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Sex;13:00:00;14:30:00;02/12/2022;Sala Aulas Mestrado;AA2.25
+1;21;-;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qui;18:09:00;18:07:00;23/05/2024;Arq 1;Auditório Afonso de Barros
 2;48;12;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;23/11/2022;Sala Aulas Mestrado;AA2.25
-3;47;11;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;16/11/2022;Sala Aulas Mestrado;AA2.25
 4;46;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;09/11/2022;Sala Aulas Mestrado;AA2.25
 5;45;9;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;02/11/2022;Sala Aulas Mestrado;AA2.25
 6;49;13;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;13:00:00;14:30:00;28/11/2022;Sala Aulas Mestrado;AA2.25
@@ -26018,3 +26017,4 @@ ID;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Apagar;Curso;Unid
 26017;39;3;-;;LIGE, LIGE-PL;Marketing para as Tecnologias;01769PL03;IGE-PL-C2, IGE-PL-C1;21;Ter;18:00:00;19:30:00;20/09/2022;Sala de Aulas normal;1E06
 26018;38;2;-;;LIGE, LIGE-PL;Marketing para as Tecnologias;01769PL03;IGE-PL-C2, IGE-PL-C1;21;Ter;18:00:00;19:30:00;13/09/2022;Sala de Aulas normal;1E06
 26019;45;9;-;;DATMC;Projecto de Investigação em Arquitectura dos Territórios Metropolitanos Contemporâneos (24ects);03953OT02;DATMC1;2;Qua;18:00:00;19:00:00;02/11/2022;Sala/anfiteatro aulas;C2.02
+26020;21;-;-;;lige;lige;lige;lige;65;Sex;22:03:00;18:07:00;24/05/2024;Anfiteatro aulas;Auditório Afonso de Barros

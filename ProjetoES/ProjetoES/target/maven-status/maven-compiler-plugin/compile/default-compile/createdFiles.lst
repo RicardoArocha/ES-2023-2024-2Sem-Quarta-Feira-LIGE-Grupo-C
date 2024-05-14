@@ -1,3 +1,3 @@
-com/meuprojeto/CsvConverter.class
-com/meuprojeto/WebController.class
-com/meuprojeto/Application.class
+com\meuprojeto\Application.class
+com\meuprojeto\WebController.class
+com\meuprojeto\CsvConverter.class

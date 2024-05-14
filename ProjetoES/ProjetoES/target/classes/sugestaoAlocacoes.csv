@@ -1,0 +1,3 @@
+SubID;ID;Data da substituicao;Data antiga;Hora da substituicao;Hora antiga;Hora de fim da substituição;Sala atribuida;Sala antiga;Unidade curricular;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Características da sala pedida para a aula
+1;1;23/05/2024;23/05/2024;20:07:00;18:09:00;20:06:00;Auditório Silva Leal;Auditório Afonso de Barros;Teoria dos Jogos e dos Contratos;21;-;-;Laboratório de Arquitetura de Computadores I
+2;1;16/05/2024;23/05/2024;18:10:00;18:09:00;18:10:00;Auditório Silva Leal;Auditório Afonso de Barros;Teoria dos Jogos e dos Contratos;20;-;-;Arq 3

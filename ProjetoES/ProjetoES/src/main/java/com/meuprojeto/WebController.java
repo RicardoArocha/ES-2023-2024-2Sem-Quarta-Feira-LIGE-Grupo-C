@@ -41,13 +41,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-
 @Controller
 public class WebController {
 
     @GetMapping("/")
     public String viewHome() {
-        return "hub"; // Sem a extensão .html, o Spring irá procurar por um arquivo chamado hub.html em src/main/resources/templates
+        return "hub"; // Sem a extensão .html, o Spring irá procurar por um arquivo chamado hub.html
+                      // em src/main/resources/templates
     }
 
     @GetMapping("/horarios")
@@ -60,7 +60,8 @@ public class WebController {
         return "salas"; // Assumindo que você tem um arquivo salas.html
     }
 
-    //tens de copair isto e fazer igual mas para o ficheiro de salas. e aqui fica upload-horarios e no outro upload-salas
+    // tens de copair isto e fazer igual mas para o ficheiro de salas. e aqui fica
+    // upload-horarios e no outro upload-salas
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
@@ -68,26 +69,25 @@ public class WebController {
                 // Define o caminho onde o arquivo será salvo
                 String saveDirectory = System.getProperty("user.dir") + "/src/main/resources/";
                 java.nio.file.Path path = Paths.get(saveDirectory + file.getOriginalFilename());
-                
+
                 // Substitui o arquivo existente com o mesmo nome
                 Files.copy(file.getInputStream(), path, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                
+
                 return ResponseEntity.ok("Arquivo carregado com sucesso: " + file.getOriginalFilename());
             } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Falha ao carregar o arquivo: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Falha ao carregar o arquivo: " + e.getMessage());
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo vazio não pode ser carregado");
         }
     }
 
-
     private static final String CSV_SALAS_PATH = "src/main/resources/caracterizacaodasSalas.csv";
     private static final String CSV_HORARIO_PATH = "src/main/resources/HorarioDeExemploAtualizado.csv";
 
     private static final String CSV_Horarios = "src/main/resources/HorarioDeExemploAtualizado.csv";
     private static final Logger log = LoggerFactory.getLogger(WebController.class);
-
 
     @GetMapping("/HorarioDeExemploAtualizado.csv")
     public ResponseEntity<Resource> getScheduleFile() {
@@ -104,6 +104,7 @@ public class WebController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @GetMapping("/caracterizacaodasSalas.csv")
     public ResponseEntity<Resource> getScheduleFile2() {
         try {
@@ -119,38 +120,72 @@ public class WebController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/HorarioParaTestesV2.csv")
+    public ResponseEntity<Resource> getScheduleFile3() {
+        try {
+            Resource file = new UrlResource(Paths.get("src/main/resources/HorarioParaTestesV2.csv").toUri());
+            if (file.exists() || file.isReadable()) {
+                return ResponseEntity.ok().body(file);
+            } else {
+                log.error("O arquivo HorarioParaTestesV2.csv não foi encontrado ou não pode ser lido.");
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            log.error("URL mal formada: ", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/HorarioParaTestes.csv")
+    public ResponseEntity<Resource> getScheduleFile4() {
+        try {
+            Resource file = new UrlResource(Paths.get("src/main/resources/HorarioParaTestes.csv").toUri());
+            if (file.exists() || file.isReadable()) {
+                return ResponseEntity.ok().body(file);
+            } else {
+                log.error("O arquivo HorarioParaTestesV2.csv não foi encontrado ou não pode ser lido.");
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            log.error("URL mal formada: ", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping("/upload-horarios")
-public ResponseEntity<String> handleFileSave(@RequestParam("file") MultipartFile file) {
-    if (!file.isEmpty()) {
-        try {
-            String saveDirectory = System.getProperty("user.dir") + "/src/main/resources/";
-            Path path = Paths.get(saveDirectory + file.getOriginalFilename());
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            return ResponseEntity.ok("Arquivo guardado com sucesso: " + file.getOriginalFilename());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao guardar o arquivo: " + e.getMessage());
+    public ResponseEntity<String> handleFileSave(@RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            try {
+                String saveDirectory = System.getProperty("user.dir") + "/src/main/resources/";
+                Path path = Paths.get(saveDirectory + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                return ResponseEntity.ok("Arquivo guardado com sucesso: " + file.getOriginalFilename());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Erro ao guardar o arquivo: " + e.getMessage());
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo vazio não pode ser guardado");
         }
-    } else {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo vazio não pode ser guardado");
+    }
+
+    @PostMapping("/upload-salas")
+    public ResponseEntity<String> handleFileSave2(@RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            try {
+                String saveDirectory = System.getProperty("user.dir") + "/src/main/resources/";
+                Path path = Paths.get(saveDirectory + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                return ResponseEntity.ok("Arquivo guardado com sucesso: " + file.getOriginalFilename());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Erro ao guardar o arquivo: " + e.getMessage());
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo vazio não pode ser guardado");
+        }
     }
 }
-
-@PostMapping("/upload-salas")
-public ResponseEntity<String> handleFileSave2(@RequestParam("file") MultipartFile file) {
-    if (!file.isEmpty()) {
-        try {
-            String saveDirectory = System.getProperty("user.dir") + "/src/main/resources/";
-            Path path = Paths.get(saveDirectory + file.getOriginalFilename());
-            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            return ResponseEntity.ok("Arquivo guardado com sucesso: " + file.getOriginalFilename());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao guardar o arquivo: " + e.getMessage());
-        }
-    } else {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Arquivo vazio não pode ser guardado");
-    }
-}
-}
-

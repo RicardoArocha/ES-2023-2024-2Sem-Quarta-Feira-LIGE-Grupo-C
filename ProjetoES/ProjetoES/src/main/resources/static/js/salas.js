@@ -1051,6 +1051,174 @@ function toggleHeatmapSelector() {
     }
 } 
 
+// * VERSION 6_NetworkGraph -- working version for HorarioDe ExemploAtualizado.csv
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("csvFileInput").addEventListener("change", handleFileSelect, false);
+  });
+  
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    parseFile(file);
+  }
+  
+  function parseFile(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const contents = e.target.result;
+      const data = parseCSV2(contents);
+      createTable(data.headers, data.data);
+      createColumnControls(data.headers);
+      const graphData = parseCSVToGraphData(data.data);
+      createNetworkGraph(graphData);
+    };
+    reader.readAsText(file);
+  }
+  
+  function parseCSV(csvData) {
+    const rows = csvData
+      .trim()
+      .split("\n")
+      .map((row) => row.split(";").map((field) => field.trim()));
+    const headers = rows.shift(); // Extract headers
+    const data = rows.map((row) => {
+      const obj = {};
+      headers.forEach((header, index) => {
+        obj[header] = row[index] || ""; // Ensure consistency
+      });
+      return obj;
+    });
+  
+    return { headers, data };
+  }
+  
+  function parseCSVToGraphData(dataArray) {
+    const nodes = [];
+    const links = [];
+    const nodeMap = new Map();
+  
+    dataArray.forEach((aula) => {
+      const nodeId = `${aula["Unidade Curricular"]} ${aula["Turno"]} ${aula["Dia da semana"]} ${aula["Hora início da aula"]}`;
+      //ID;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Apagar;
+      //Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Características da sala pedida para a aula;Sala atribuída à aula
+  
+      if (!nodeMap.has(nodeId)) {
+        const newNode = { id: nodeId, label: nodeId };
+        nodeMap.set(nodeId, newNode);
+        nodes.push(newNode);
+      }
+    });
+  
+    dataArray.forEach((aula1, i) => {
+      dataArray.slice(i + 1).forEach((aula2) => {
+        if (
+          aula1["Sala atribuída à aula"] === aula2["Sala atribuída à aula"] && // Same room
+          aula1["Dia da semana"] === aula2["Dia da semana"] && // Same day
+          ((aula1["Hora início da aula"] < aula2["Hora fim da aula"] && aula1["Hora fim da aula"] > aula2["Hora início da aula"]) || // Classes overlap
+            (aula1["Hora início da aula"] >= aula2["Hora início da aula"] && aula1["Hora início da aula"] <= aula2["Hora fim da aula"]) || // aula1 starts during aula2
+            (aula2["Hora início da aula"] >= aula1["Hora início da aula"] && aula2["Hora início da aula"] <= aula1["Hora fim da aula"])) // aula2 starts during aula1
+        ) {
+          links.push({
+            source: nodeMap.get(`${aula1["Unidade Curricular"]} ${aula1["Turno"]} ${aula1["Dia da semana"]} ${aula1["Hora início da aula"]}`),
+            target: nodeMap.get(`${aula2["Unidade Curricular"]} ${aula2["Turno"]} ${aula2["Dia da semana"]} ${aula2["Hora início da aula"]}`),
+          });
+        }
+      });
+    });
+  
+    return { nodes, links };
+  }
+  
+  function loadNetworkGraph() {
+    //const scheduleCsvUrl = "/HorarioDeExemploAtualizado.csv"; // Change this URL to point to your CSV file
+    const scheduleCsvUrl = "/HorarioParaTestes.csv";
+    console.log(`Carregando CSV do URL ${scheduleCsvUrl}...`); // Comment to hide console log
+    fetch(scheduleCsvUrl)
+      .then((response) => response.text())
+      .then((csvData) => {
+        console.log("CSV carregado com sucesso!"); // Comment to hide console log
+        const parsedData = parseCSV2(csvData); // Parse the CSV data
+        const graphData = parseCSVToGraphData(parsedData.data); // Convert parsed data to graph data format
+        createNetworkGraph(graphData); // Create the network graph
+      })
+      .catch((error) => console.error("Erro ao carregar os dados do gráfico:", error));
+  }
+  
+  function createNetworkGraph(graphData) {
+    const width = 800;
+    const height = 600;
+  
+    const networkGraphContainer = d3.select("#networkGraphContainer");
+    networkGraphContainer.selectAll("*").remove(); // Clear the container before adding new graph
+  
+    const svg = networkGraphContainer.append("svg").attr("width", width).attr("height", height);
+  
+    const link = svg.selectAll(".link").data(graphData.links).enter().append("line").attr("class", "link").style("stroke", "#aaa");
+  
+    const node = svg.selectAll(".node").data(graphData.nodes).enter().append("g").attr("class", "node");
+  
+    node.append("circle").attr("r", 10).attr("fill", "blue");
+  
+    node
+      .append("text")
+      .attr("dx", 12)
+      .attr("dy", ".35em")
+      .text((d) => d.label);
+  
+    const simulation = d3
+      .forceSimulation(graphData.nodes)
+      .force(
+        "link",
+        d3
+          .forceLink(graphData.links)
+          .id((d) => d.id)
+          .distance(50)
+      )
+      .force("charge", d3.forceManyBody().strength(-40))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .on("tick", ticked);
+  
+    function ticked() {
+      link
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => d.target.x)
+        .attr("y2", (d) => d.target.y);
+  
+      node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+    }
+  }
+  
+  let networkGraphVisible = false; // Variable to track the visibility of the network graph
+  
+  function toggleNetworkGraph() {
+    // console.log("Toggling network graph visibility..."); // Comment to hide console log
+    const networkGraphContainer = document.getElementById("networkGraphContainer");
+    // console.log("networkGraphContainer:", networkGraphContainer); // Comment to hide console log
+    if (networkGraphVisible) {
+      // console.log("Hiding network graph..."); // Comment to hide console log
+      networkGraphContainer.style.display = "none";
+      // console.log("loadNetworkGraphButton textContent:", document.getElementById("loadNetworkGraphButton").textContent); // Comment to hide console log
+      document.getElementById("loadNetworkGraphButton").textContent = "Visualizar NetworkGraph";
+      networkGraphVisible = false;
+      // console.log("networkGraphVisible:", networkGraphVisible); // Comment to hide console log
+    } else {
+      // console.log("Showing network graph..."); // Comment to hide console log
+      networkGraphContainer.style.display = "block";
+      // console.log("loadNetworkGraphButton textContent:", document.getElementById("loadNetworkGraphButton").textContent); // Comment to hide console log
+      document.getElementById("loadNetworkGraphButton").textContent = "Ocultar NetworkGraph";
+      networkGraphVisible = true;
+      // console.log("networkGraphVisible:", networkGraphVisible); // Comment to hide console log
+      if (!networkGraphContainer.hasChildNodes()) {
+        // Check if the graph has not been loaded yet
+        // console.log("Loading network graph..."); // Comment to hide console log
+        loadNetworkGraph(); // Load data and create the graph
+      }
+    }
+  }
+  
+  document.getElementById("loadNetworkGraphButton").addEventListener("click", toggleNetworkGraph);
+  
 module.exports = {
     checkPreselectedSchedule,
     handleFileSelect2,

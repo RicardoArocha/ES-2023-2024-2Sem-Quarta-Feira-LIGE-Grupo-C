@@ -141,7 +141,7 @@ body {
     vertical-align: text-top; /* Alinhar verticalmente o texto */
 }
 
-#showHeatmapButton, #toggleHeatmapButton {
+#showHeatmapButton, #toggleHeatmapButton, #loadNetworkGraphButton {
     padding: 10px 15px;
     font-size: 13px;
     color: #fff;
@@ -156,7 +156,7 @@ body {
     margin-top: 20px;
 }
 
-#showHeatmapButton:hover, #toggleHeatmapButton:hover {
+#showHeatmapButton:hover, #toggleHeatmapButton:hover, #loadNetworkGraphButton:hover {
     background-position: right center;
 }
 
@@ -248,3 +248,42 @@ body {
 #heatmap-containerMes {
     margin-top: 20px; /* Adiciona espaço na parte superior */
 }
+
+/* Espacamento entre botoes*/
+.spacer {
+    margin-top: 30px; /* Espaçamento superior para separá-lo do resto do conteúdo */
+    margin-left: 10px;
+    overflow-x: auto; /* Adicionar rolagem horizontal se necessário */
+}
+
+.link {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.node text {
+    pointer-events: none;
+    font: 10px sans-serif;
+}
+
+.node circle {
+    fill: #69b3a2;
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+/* CSS for the network graph container */
+.networkGraphContainer {
+    width: 100%;
+    height: 500px;
+    overflow: hidden; /* Hide overflowing content */
+    position: relative; /* Ensure positioning context */
+}
+
+/* Ensure SVG elements are properly contained */
+.networkGraphContainer svg {
+    width: 100%;
+    height: 100%;
+}
+
+

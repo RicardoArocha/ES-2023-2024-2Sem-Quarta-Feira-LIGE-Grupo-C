@@ -9,13 +9,24 @@ document.addEventListener('DOMContentLoaded', function() {
     loadRoomData();
     loadScheduleData();
     checkPreselectedSchedule();
+    loadSuggestions();
     const substitutionData = JSON.parse(localStorage.getItem('substitutionData'));
     if (substitutionData) {
         applySubstitutionFilters(substitutionData);
-    }
+    }    
     const retrievedID = localStorage.getItem("substitutionID"); // Recuperar o ID do `localStorage`
     console.log("ID recuperado:", retrievedID)
+    document.getElementById('suggestAllocationButton').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevents the form from being submitted
+        const form = document.getElementById('substitutionForm'); 
+        suggestAllocation(form); // Calls the suggestAllocation function
+     //  location.reload();
+
+    });
+
+
 });
+
 
 // Carrega os dados pré-selecionados de horários, se houver
 function checkPreselectedSchedule() {
@@ -291,19 +302,6 @@ const modalHTML = `
     </div>
 
     <form id="substitutionForm" onsubmit="submitSubstitution(event)">
-
-      <!-- Alteração para lista suspensa para o dia da semana -->
-      <label for="weekday">Dia da semana:</label>
-      <select id="weekday" name="weekday" required>
-        <option value="Seg">Segunda-feira</option>
-        <option value="Ter">Terça-feira</option>
-        <option value="Qua">Quarta-feira</option>
-        <option value="Qui">Quinta-feira</option>
-        <option value="Sex">Sexta-feira</option>
-        <option value="Sab">Sábado</option>
-        <option value="Dom">Domingo</option>
-      </select>
-
       <label for="start-time">Hora início da aula:</label>
       <input type="time" id="start-time" name="start-time" required>
 
@@ -320,7 +318,14 @@ const modalHTML = `
       </select>
 
       <button type="submit">Substituir</button>
+      
+
+
     </form>
+    <button id="suggestAllocationButton" button type= >Sugerir Alocação</button>
+   
+
+</div>
   </div>
 </div>
 `;
@@ -350,9 +355,6 @@ function confirmSubstitution(rowData) {
     document.getElementById("modal-id").textContent = selectedID;
     document.getElementById("modal-room").textContent = roomName;
     document.getElementById("modal-building").textContent = buildingName;
-
-    // Preenche campos do formulário com valores de `rowData`
-    document.getElementById("weekday").value = rowData['Dia da semana'] || ""; // Dia da semana
     document.getElementById("start-time").value = rowData['Hora início da aula'] || ""; // Hora de início
     document.getElementById("end-time").value = rowData['Hora fim da aula'] || ""; // Hora de fim
     document.getElementById("date").value = rowData['Data da aula'] || ""; // Data da aula
@@ -379,7 +381,7 @@ function submitSubstitution(event) {
         const newDate = formData.get("date"); // Nova data para o cálculo das semanas
 
         // Atualiza campos do formulário
-        rowToUpdate["Dia da semana"] = formData.get("weekday");
+        rowToUpdate["Dia da semana"] = getWeekdayFromDate(formatDate(newDate));
         rowToUpdate["Hora início da aula"] = formatTime(formData.get("start-time")); // Formata para HH:MM:SS
         rowToUpdate["Hora fim da aula"] = formatTime(formData.get("end-time")); // Idem
         rowToUpdate["Data da aula"] = formatDate(newDate); // Formata para DD/MM/AAAA
@@ -698,19 +700,6 @@ const addClassModal=`<div id="addClassModal" class="modal" style="display: none;
 
       <label for="enrolled">Inscritos no turno:</label>
       <input type="number" id="enrolled" name="enrolled" required>
-
-      <!-- Reutilizando o mesmo estilo de seleção de dia da semana do outro modal -->
-      <label for="week-day">Dia da semana:</label>
-      <select id="week-day" name="week-day" required>
-        <option value="Seg">Segunda-feira</option>
-        <option value="Ter">Terça-feira</option>
-        <option value="Qua">Quarta-feira</option>
-        <option value="Qui">Quinta-feira</option>
-        <option value="Sex">Sexta-feira</option>
-        <option value="Sab">Sábado</option>
-        <option value="Dom">Domingo</option>
-      </select>
-
       <label for="start-time">Hora início da aula:</label>
       <input type="time" id="start-time" name="start-time" required>
 
@@ -773,7 +762,7 @@ function submitNewClass(event) {
             "Turno": formData.get("shift"),
             "Turma": formData.get("class"),
             "Inscritos no turno": formData.get("enrolled"),
-            "Dia da semana": formData.get("week-day"),
+            "Dia da semana": getWeekdayFromDate(formatDate(formData.get("date"))),
             "Hora início da aula": formatTime(formData.get("start-time")),
             "Hora fim da aula": formatTime(formData.get("end-time")),
             "Data da aula": formatDate(formData.get("date")),
@@ -1051,178 +1040,6 @@ function toggleHeatmapSelector() {
     }
 } 
 
-// * VERSION 6_NetworkGraph -- working version for HorarioDe ExemploAtualizado.csv
-
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("csvFileInput").addEventListener("change", handleFileSelect, false);
-  });
-  
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    parseFile(file);
-  }
-  
-  function parseFile(file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const contents = e.target.result;
-      const data = parseCSV2(contents);
-      createTable(data.headers, data.data);
-      createColumnControls(data.headers);
-      const graphData = parseCSVToGraphData(data.data);
-      createNetworkGraph(graphData);
-    };
-    reader.readAsText(file);
-  }
-  
-  function parseCSV(csvData) {
-    const rows = csvData
-      .trim()
-      .split("\n")
-      .map((row) => row.split(";").map((field) => field.trim()));
-    const headers = rows.shift(); // Extract headers
-    const data = rows.map((row) => {
-      const obj = {};
-      headers.forEach((header, index) => {
-        obj[header] = row[index] || ""; // Ensure consistency
-      });
-      return obj;
-    });
-  
-    return { headers, data };
-  }
-  
-  function parseCSVToGraphData(dataArray) {
-    const nodes = [];
-    const links = [];
-    const nodeMap = new Map();
-  
-    dataArray.forEach((aula) => {
-      const nodeId = `${aula["Unidade Curricular"]} ${aula["Turno"]} ${aula["Dia da semana"]} ${aula["Hora início da aula"]}`;
-      //ID;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Apagar;
-      //Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Características da sala pedida para a aula;Sala atribuída à aula
-  
-      if (!nodeMap.has(nodeId)) {
-        const newNode = { id: nodeId, label: nodeId };
-        nodeMap.set(nodeId, newNode);
-        nodes.push(newNode);
-      }
-    });
-  
-    dataArray.forEach((aula1, i) => {
-      dataArray.slice(i + 1).forEach((aula2) => {
-        if (
-          aula1["Sala atribuída à aula"] === aula2["Sala atribuída à aula"] && // Same room
-          aula1["Dia da semana"] === aula2["Dia da semana"] && // Same day
-          ((aula1["Hora início da aula"] < aula2["Hora fim da aula"] && aula1["Hora fim da aula"] > aula2["Hora início da aula"]) || // Classes overlap
-            (aula1["Hora início da aula"] >= aula2["Hora início da aula"] && aula1["Hora início da aula"] <= aula2["Hora fim da aula"]) || // aula1 starts during aula2
-            (aula2["Hora início da aula"] >= aula1["Hora início da aula"] && aula2["Hora início da aula"] <= aula1["Hora fim da aula"])) // aula2 starts during aula1
-        ) {
-          links.push({
-            source: nodeMap.get(`${aula1["Unidade Curricular"]} ${aula1["Turno"]} ${aula1["Dia da semana"]} ${aula1["Hora início da aula"]}`),
-            target: nodeMap.get(`${aula2["Unidade Curricular"]} ${aula2["Turno"]} ${aula2["Dia da semana"]} ${aula2["Hora início da aula"]}`),
-          });
-        }
-      });
-    });
-  
-    return { nodes, links };
-  }
-  
-  function loadNetworkGraph() {
-    //const scheduleCsvUrl = "/HorarioDeExemploAtualizado.csv"; // Change this URL to point to your CSV file
-    const scheduleCsvUrl = "/HorarioParaTestes.csv";
-    console.log(`Carregando CSV do URL ${scheduleCsvUrl}...`); // Comment to hide console log
-    fetch(scheduleCsvUrl)
-      .then((response) => response.text())
-      .then((csvData) => {
-        console.log("CSV carregado com sucesso!"); // Comment to hide console log
-        const parsedData = parseCSV2(csvData); // Parse the CSV data
-        const graphData = parseCSVToGraphData(parsedData.data); // Convert parsed data to graph data format
-        createNetworkGraph(graphData); // Create the network graph
-      })
-      .catch((error) => console.error("Erro ao carregar os dados do gráfico:", error));
-  }
-  
-  function createNetworkGraph(graphData) {
-    const width = 800;
-    const height = 600;
-  
-    const networkGraphContainer = d3.select("#networkGraphContainer");
-    const containerWidth = networkGraphContainer.node().getBoundingClientRect().width;
-    const containerHeight = window.innerHeight * 0.7; // You can adjust this as needed
-    
-    networkGraphContainer.selectAll("*").remove(); // Clear the container before adding new graph
-    const svg = networkGraphContainer.append("svg")
-        .attr("width", containerWidth)
-        .attr("height", containerHeight);
-  
-    const link = svg.selectAll(".link").data(graphData.links).enter().append("line").attr("class", "link").style("stroke", "#aaa");
-  
-    const node = svg.selectAll(".node").data(graphData.nodes).enter().append("g").attr("class", "node");
-  
-    node.append("circle").attr("r", 10).attr("fill", "blue");
-  
-    node
-      .append("text")
-      .attr("dx", 12)
-      .attr("dy", ".35em")
-      .text((d) => d.label);
-  
-    const simulation = d3
-      .forceSimulation(graphData.nodes)
-      .force(
-        "link",
-        d3
-          .forceLink(graphData.links)
-          .id((d) => d.id)
-          .distance(50)
-      )
-      .force("charge", d3.forceManyBody().strength(-40))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .on("tick", ticked);
-  
-    function ticked() {
-      link
-        .attr("x1", (d) => d.source.x)
-        .attr("y1", (d) => d.source.y)
-        .attr("x2", (d) => d.target.x)
-        .attr("y2", (d) => d.target.y);
-  
-      node.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
-    }
-  }
-  
-  let networkGraphVisible = false; // Variable to track the visibility of the network graph
-  
-  function toggleNetworkGraph() {
-    // console.log("Toggling network graph visibility..."); // Comment to hide console log
-    const networkGraphContainer = document.getElementById("networkGraphContainer");
-    // console.log("networkGraphContainer:", networkGraphContainer); // Comment to hide console log
-    if (networkGraphVisible) {
-      // console.log("Hiding network graph..."); // Comment to hide console log
-      networkGraphContainer.style.display = "none";
-      // console.log("loadNetworkGraphButton textContent:", document.getElementById("loadNetworkGraphButton").textContent); // Comment to hide console log
-      document.getElementById("loadNetworkGraphButton").textContent = "Visualizar NetworkGraph";
-      networkGraphVisible = false;
-      // console.log("networkGraphVisible:", networkGraphVisible); // Comment to hide console log
-    } else {
-      // console.log("Showing network graph..."); // Comment to hide console log
-      networkGraphContainer.style.display = "block";
-      // console.log("loadNetworkGraphButton textContent:", document.getElementById("loadNetworkGraphButton").textContent); // Comment to hide console log
-      document.getElementById("loadNetworkGraphButton").textContent = "Ocultar NetworkGraph";
-      networkGraphVisible = true;
-      // console.log("networkGraphVisible:", networkGraphVisible); // Comment to hide console log
-      if (!networkGraphContainer.hasChildNodes()) {
-        // Check if the graph has not been loaded yet
-        // console.log("Loading network graph..."); // Comment to hide console log
-        loadNetworkGraph(); // Load data and create the graph
-      }
-    }
-  }
-  
-  document.getElementById("loadNetworkGraphButton").addEventListener("click", toggleNetworkGraph);
-  
 module.exports = {
     checkPreselectedSchedule,
     handleFileSelect2,
@@ -1247,3 +1064,298 @@ module.exports = {
     resetFilters,
 
 };
+function suggestAllocation(form) {
+    fetchMaxSubID()  // Assume que esta função está definida e retorna uma Promise com o maior SubID.
+        .then(maxId => {
+            const SubID = maxId + 1;
+            const formData = new FormData(form);
+            const selectedRow = JSON.parse(localStorage.getItem("selectedRow") || '{}');
+            const selectedID = localStorage.getItem("substitutionID");
+            const rowToUpdate = scheduleData.find((row) => row["ID"] === selectedID); // Encontra a 
+            console.log("teste",rowToUpdate);
+
+
+            const novaData = formatDate(formData.get("date"));
+            const novaHora = formatTime(formData.get("start-time"));
+            const antigaData = rowToUpdate['Data da aula'];
+            const antigaHora = rowToUpdate['Hora início da aula'];
+            const sala = selectedRow['Nome sala'];
+            const salaantiga = rowToUpdate['Sala atribuída à aula'];
+            const unidadeCurricular = rowToUpdate['Unidade Curricular'];
+            const horafim = formatTime(document.getElementById('end-time').value);
+            const semanaAno = calculateWeekOfYear(novaData);
+            const semana1sem = calculateSemesterWeek(novaData, '2022-10-01');
+            const semana2sem = calculateSemesterWeek(novaData, '2023-02-01');
+            const selectedCharacteristics = Array.from(formData.getAll("room-attributes")).join(", ");
+
+            if (!novaData || !novaHora) {
+                console.error('One or more date/time inputs are empty', {novaData, novaHora});
+                alert('Erro: Um ou mais campos de data/hora estão vazios.');
+                return;
+            }
+
+            // Constrói o conteúdo CSV
+            const csvContent = `${SubID};${selectedID};${novaData};${antigaData};${novaHora};${antigaHora};${horafim};${sala};${salaantiga};${unidadeCurricular};${semanaAno};${semana1sem};${semana2sem};${selectedCharacteristics}\n`;
+
+            // Envia os dados CSV para o servidor
+            saveDataToServer(csvContent);
+            console.log(csvContent);
+        })
+        .catch(error => {
+            console.error('Erro ao obter o SubID máximo:', error);
+            alert("Erro ao processar o arquivo de alocações.");
+        });
+}
+
+function saveDataToServer(csvContent) {
+    fetch('/save-csv', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain',
+        },
+        body: csvContent
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text); });
+        }
+        return response.text();
+    })
+    .then(message => {
+        
+        //location.reload();  // Optionally reload or update UI
+    })
+    .catch(error => {
+        console.error('Error sending allocation suggestion:', error);
+        
+    });
+}
+
+
+
+
+
+
+function loadSuggestions() {
+    const suggestionsUrl = '/sugestaoAlocacoes.csv'; // This should work if the file is in the static folder
+    fetch(suggestionsUrl)
+        .then(response => response.text())
+        .then(csvData => {
+            const { headers, data } = parseCSV2(csvData);
+            initializeSuggestionsTable(headers, data);
+        })
+        .catch(error => console.error('Failed to load suggestions:', error));
+}
+
+
+
+function initializeSuggestionsTable(headers, data) {
+    const columns = headers.map(header => ({ title: header, field: header }));
+
+    // Adicionando a coluna de substituição
+    columns.unshift({
+        title: "Substituir",
+        headerSort: false,
+        formatter: function(cell, formatterParams) {
+            var button = document.createElement("button");
+            button.textContent = "Substituir";
+            button.style.padding = "5px 10px";
+            button.style.border = "none";
+            button.style.borderRadius = "5px";
+            button.style.background = "#4CAF50";
+            button.style.color = "white";
+            button.onclick = function() {
+                const rowData = cell.getRow().getData();
+                localStorage.setItem("selectedRow2", JSON.stringify(rowData));
+                substituir(); // Suponha que esta função está definida em outro lugar
+                DeleteAlocacaoByID(rowData.SubID);
+                cell.getRow().delete();
+            };
+            return button;
+        },
+        width: 100,
+        hozAlign: "center",
+    });
+
+    // Adicionando a coluna de remoção
+    columns.unshift({
+        title: "Remover",
+        formatter: function(cell, formatterParams) {
+            var button = document.createElement("button");
+            button.textContent = "Remover";
+            button.className = "btn btn-danger"; // Usando classes Bootstrap para estilo
+            button.onclick = function() {
+                const rowData = cell.getRow().getData();
+                if (confirm("Tem certeza que deseja remover esta alocação?")) {
+                    DeleteAlocacaoByID(rowData.SubID);
+                    cell.getRow().delete(); // Remove a linha após a confirmação e o processamento
+                }
+            };
+            return button;
+        },
+        width: 100,
+        hozAlign: "center",
+    });
+
+    new Tabulator("#suggestionsTable", {
+        data: data,
+        columns: columns,
+        layout: "fitColumns",
+        tooltips: true,
+        addRowPos: "top",
+        history: true,
+        pagination: "local",
+        paginationSize: 5,
+        movableColumns: true,
+        resizableRows: true,
+    });
+}
+
+
+
+
+// Função substituir
+
+
+// Função substituir
+function substituir() {
+    const selectedRow = JSON.parse(localStorage.getItem("selectedRow2")); // Linha selecionada
+    console.log(selectedRow);
+    const selectedID = localStorage.getItem("substitutionID"); // ID do `localStorage`
+
+    const rowToUpdate = scheduleData.find(row => row["ID"] === selectedID); // Encontra a linha pelo ID
+
+    if (rowToUpdate) {
+        // Atualiza campos do formulário
+        rowToUpdate["Dia da semana"] = getWeekdayFromDate(selectedRow["Data da substituicao"]);
+        rowToUpdate["Hora início da aula"] = selectedRow["Hora da substituicao"]; // Assume formato HH:MM:SS
+        rowToUpdate["Hora fim da aula"] = selectedRow["Hora de fim da substituição"]; // Assume formato HH:MM:SS
+        rowToUpdate["Data da aula"] = selectedRow["Data da substituicao"]; // Assume formato DD/MM/AAAA
+        rowToUpdate["Sala atribuída à aula"] = selectedRow["Sala atribuida"]; // Preenche a sala atribuída
+        // Atualiza as semanas (assumindo que você tenha a lógica para calcular isso corretamente)
+        rowToUpdate["Semana do Ano"] = calculateWeekOfYear(selectedRow["Data da substituicao"]); // Semana do ano
+        rowToUpdate["Semana do 1º Semestre"] = calculateSemesterWeek(selectedRow["Data da substituicao"], "2022-10-01"); // Semana do 1º semestre
+        rowToUpdate["Semana do 2º Semestre"] = calculateSemesterWeek(selectedRow["Data da substituicao"], "2023-02-01"); // Semana do 2º semestre
+        // Obter as características selecionadas do menu suspenso
+        const selectedCharacteristics = selectedRow["Características da sala pedida para a aula"];
+        
+        rowToUpdate["Características da sala pedida para a aula"] = selectedCharacteristics; // Preenche o campo com as características
+
+        saveScheduleToCSV(); // Salva o arquivo CSV atualizado
+        closeModal(); // Fecha o modal
+
+        alert("Substituição efetuada com sucesso!"); // Notifica o usuário sobre a substituição bem-sucedida
+    }
+}
+
+function parseCSV3(csvData) {
+    const rows = csvData.trim().split('\n');
+    const headers = rows.shift().split(';').map(header => header.trim());
+    const data = rows.map(row => {
+        const values = row.split(';').map(value => value.trim());
+        return headers.reduce((obj, header, index) => {
+            obj[header] = values[index] || "";
+            return obj;
+        }, {});
+    });
+    return { headers, data };
+}
+function getWeekdayFromDate(dateStr) {
+    // Espera uma string de data no formato DD/MM/AAAA
+    const [day, month, year] = dateStr.split("/").map(Number);
+    const date = new Date(year, month - 1, day); // JavaScript conta meses de 0 a 11
+    const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
+    return weekdays[date.getDay()]; // getDay retorna um número de 0 (domingo) a 6 (sábado)
+}
+function parseCSV4(csvData) {
+    const lines = csvData.split('\n');
+    const headers = lines.shift().split(';');
+    const data = lines.map(line => {
+        const values = line.split(';');
+        return headers.reduce((object, header, index) => {
+            object[header] = values[index];
+            return object;
+        }, {});
+    });
+    return { headers, data };
+}
+
+
+
+function updateCSV1(csvData, idToRemove) {
+    const rows = csvData.trim().split('\n');
+    const headers = rows.shift(); // Mantém o cabeçalho original
+    const filteredRows = rows.filter(row => !row.startsWith(idToRemove + ';')); // Assume que o ID é sempre o primeiro campo
+
+    return [headers, ...filteredRows].join('\n');
+}
+
+function saveUpdatedCSV1(updatedCSV) {
+    const formData = new FormData();
+    const blob = new Blob([updatedCSV], { type: 'text/csv' });
+    formData.append('file', blob, 'sugestaoAlocacoes.csv');
+
+    fetch('/upload-alocacoes', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Falha ao salvar o arquivo de alocações.");
+        return response.text();
+    })
+    .then(message => {
+        alert("CSV de alocações atualizado com sucesso: " + message);
+    })
+    .catch(error => {
+        console.error('Erro ao enviar o arquivo de alocações:', error);
+        alert("Erro ao salvar o arquivo de alocações.");
+    });
+}
+
+function DeleteAlocacaoByID(id) {
+    fetch('/sugestaoAlocacoes.csv') // Caminho do arquivo de alocações
+        .then(response => {
+            if (!response.ok) throw new Error("Falha ao acessar o arquivo de alocações.");
+            return response.text();
+        })
+        .then(csvData => {
+            const updatedCSV = updateCSV1(csvData, id);
+            saveUpdatedCSV1(updatedCSV);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar ou processar o arquivo de alocações:', error);
+            alert("Erro ao processar o arquivo de alocações.");
+        });
+}
+
+const fs = require('fs').promises;
+const path = require('path');
+
+function fetchMaxSubID() {
+    const path = '/sugestaoAlocacoes.csv'; // Make sure 'path' is declared before usage
+
+    return fetch(path)  // Correct use of 'path' after initialization
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server responded with status ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(csvData => {
+            const rows = csvData.trim().split('\n');
+            let maxId = 0;
+            rows.slice(1).forEach(row => {
+                const cells = row.split(';');
+                const currentId = parseInt(cells[0], 10);
+                if (currentId > maxId) maxId = currentId;
+            });
+            return maxId;
+        })
+        .catch(error => {
+            console.error(`Error fetching maximum SubID: ${error}`);
+            throw error;  // Make sure to re-throw the error to handle it in the calling function
+        });
+}
+
+
+

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,7 +36,7 @@
         </div>
 
         <div id="tableContainer"></div>
-        <button id="showHeatmapButton">Visualizar HeatMap semanal</button>
+        <button id="showHeatmapButton" >Visualizar HeatMap semanal</button>
         <div id="heatmap-containerDias"></div>
 
 
@@ -60,12 +61,10 @@
             <div id="heatmap-containerMes"></div>
         </div>
 
-        <div id="spacer"></div>
-        <button id="loadNetworkGraphButton">Visualizar NetworkGraph</button>
-        <div id="networkGraphContainer"></div>
-
         <button class="boat-button" onclick="window.location.href='/'">&#x21A9;</button>
-
+        <div id="suggestionsTableContainer" style="display: block;">
+            <h2>Sugestões de Alocações</h2>
+            <div id="suggestionsTable"></div>
     </main>
 
     <script src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
@@ -73,7 +72,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="/js/salas.js"></script>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    
 
 </body>
 

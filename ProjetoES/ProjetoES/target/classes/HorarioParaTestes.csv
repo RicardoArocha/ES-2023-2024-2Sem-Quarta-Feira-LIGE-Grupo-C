@@ -1,0 +1,100 @@
+ID;Semana do Ano;Semana do 1º Semestre;Semana do 2º Semestre;Apagar;Curso;Unidade Curricular;Turno;Turma;Inscritos no turno;Dia da semana;Hora início da aula;Hora fim da aula;Data da aula;Características da sala pedida para a aula;Sala atribuída à aula
+1;49;14;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Sex;13:00:00;14:30:00;02/12/2022;Sala Aulas Mestrado;AA2.25
+2;48;12;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;23/11/2022;Sala Aulas Mestrado;AA2.25
+3;47;11;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;16/11/2022;Sala Aulas Mestrado;AA2.25
+4;46;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;09/11/2022;Sala Aulas Mestrado;AA2.25
+5;45;9;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Qua;13:00:00;14:30:00;02/11/2022;Sala Aulas Mestrado;AA2.25
+6;49;13;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;13:00:00;14:30:00;28/11/2022;Sala Aulas Mestrado;AA2.25
+7;48;12;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;13:00:00;14:30:00;21/11/2022;Sala Aulas Mestrado;AA2.25
+8;47;11;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;13:00:00;14:30:00;14/11/2022;Sala Aulas Mestrado;AA2.25
+9;46;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;13:00:00;14:30:00;07/11/2022;Sala Aulas Mestrado;AA2.25
+10;49;13;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Ter;13:00:00;14:30:00;29/11/2022;Sala Aulas Mestrado;AA2.25
+11;48;12;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Ter;13:00:00;14:30:00;22/11/2022;Sala Aulas Mestrado;AA2.25
+12;47;11;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Ter;13:00:00;14:30:00;15/11/2022;Sala Aulas Mestrado;AA2.25
+13;46;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Ter;13:00:00;14:30:00;08/11/2022;Sala Aulas Mestrado;AA2.25
+14;45;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Sex;10:30:00;12:00:00;04/11/2022;Sala Aulas Mestrado;AA2.26
+15;45;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Sex;12:00:00;13:30:00;04/11/2022;Sala Aulas Mestrado;AA2.26
+16;49;14;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Sex;14:30:00;16:00:00;02/12/2022;Sala Aulas Mestrado;AA2.25
+17;49;13;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;14:30:00;16:00:00;28/11/2022;Sala Aulas Mestrado;AA2.25
+18;48;12;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;14:30:00;16:00:00;21/11/2022;Sala Aulas Mestrado;AA2.25
+19;47;11;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;14:30:00;16:00:00;14/11/2022;Sala Aulas Mestrado;AA2.25
+20;46;10;-;;ME;Teoria dos Jogos e dos Contratos;01789TP01;MEA1;30;Seg;14:30:00;16:00:00;07/11/2022;Sala Aulas Mestrado;AA2.25
+21;51;15;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;14:30:00;16:00:00;07/11/2022;Sala Aulas Mestrado;AA2.25
+22;50;14;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;05/12/2022;Sala Aulas Mestrado;AA2.25
+23;49;13;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;28/11/2022;Não necessita de sala;AA2.25
+24;48;12;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;21/11/2022;Não necessita de sala;AA3.24
+25;47;11;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;14/11/2022;Sala Aulas Mestrado;AA3.24
+26;46;10;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;07/11/2022;Sala Aulas Mestrado;AA2.23
+27;45;9;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;31/10/2022;Sala Aulas Mestrado;AA2.23
+28;44;8;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;24/10/2022;Sala Aulas Mestrado;AA2.23
+29;43;7;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;17/10/2022;Sala Aulas Mestrado;AA2.25
+30;42;6;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;10/10/2022;Sala Aulas Mestrado;AA2.25
+31;41;5;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;03/10/2022;Sala Aulas Mestrado;AA2.28
+32;40;4;-;;PIUDHIST;Seminário de Projecto I (Piudhist);SP-I_(Piudhist)S01;DHMCMG1;0;Seg;18:00:00;20:00:00;26/09/2022;Sala Aulas Mestrado;AA2.26
+33;51;15;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;14/12/2022;Sala/anfiteatro aulas;2E07
+34;50;14;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;07/12/2022;Sala de Aulas normal;2E07
+35;49;13;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;30/11/2022;Sala de Aulas normal;2E07
+36;48;12;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;23/11/2022;Sala de Aulas normal;2E07
+37;47;11;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;16/11/2022;Sala de Aulas normal;2E07
+38;46;10;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;09/11/2022;Sala de Aulas normal;2E07
+39;45;9;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;02/11/2022;Sala de Aulas normal;2E07
+40;44;8;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;26/10/2022;Sala de Aulas normal;AA2.25
+41;43;7;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;19/10/2022;Sala de Aulas normal;2E07
+42;42;6;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;12/10/2022;Sala de Aulas normal;2E07
+43;40;4;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Seg;14:30:00;16:00:00;07/11/2022;Sala de Aulas normal;2E07
+44;39;3;-;;LP;Competências Académicas I;L5205PL05;PA3;23;Qua;11:00:00;12:30:00;21/09/2022;Sala de Aulas normal;2E07
+45;46;11;-;;CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;10/11/2022;Sala de Aulas normal;AA3.30
+46;45;10;-;;CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;03/11/2022;Sala de Aulas normal;AA3.30
+47;44;9;-;;CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;27/10/2022;Sala de Aulas normal;AA3.30
+48;43;8;-;;CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;20/10/2022;Sala de Aulas normal;AA3.30
+49;42;7;-;;CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;13/10/2022;Sala de Aulas normal;AA3.30
+50;41;6;-;;CT;Gestão de Conflitos;00668TP02;CI-CT-02;24;Qui;13:00:00;15:00:00;06/10/2022;Sala de Aulas normal;AA3.30
+51;50;15;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;09/12/2022;Sala/anfiteatro aulas;C5.06
+52;49;14;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;02/12/2022;Sala/anfiteatro aulas;C5.06
+53;48;13;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;25/11/2022;Sala/anfiteatro aulas;C5.06
+54;47;12;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;18/11/2022;Sala/anfiteatro aulas;C5.06
+55;46;11;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;11/11/2022;Sala/anfiteatro aulas;C5.06
+56;44;9;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;28/10/2022;Sala/anfiteatro aulas;C5.06
+57;43;8;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;21/10/2022;Sala/anfiteatro aulas;C5.06
+58;42;7;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;14/10/2022;Sala/anfiteatro aulas;C5.06
+59;41;6;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;07/10/2022;Sala/anfiteatro aulas;C5.06
+60;40;5;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;30/09/2022;Sala/anfiteatro aulas;C5.06
+61;39;4;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;23/09/2022;Sala/anfiteatro aulas;C5.06
+62;38;3;-;;LETI, LEI, LEI-PL, LIGE, LIGE-PL;Fundamentos de Arquitectura de Computadores;L0705TP23;ET-A9, ET-A8, ET-A7, ET-A12, ET-A11, ET-A10;44;Sex;13:00:00;14:30:00;16/09/2022;Não necessita de sala;
+63;50;14;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;05/12/2022;Sala/anfiteatro aulas;AA2.24
+64;49;13;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;28/11/2022;Sala/anfiteatro aulas;D1.07
+65;48;12;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;21/11/2022;Sala/anfiteatro aulas;D1.07
+66;47;11;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;14/11/2022;Sala/anfiteatro aulas;D1.07
+67;46;10;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;07/11/2022;Sala/anfiteatro aulas;D1.07
+68;45;9;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;31/10/2022;Sala/anfiteatro aulas;D1.07
+69;44;8;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;24/10/2022;Sala/anfiteatro aulas;D1.07
+70;43;7;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;17:30:00;19:00:00;17/10/2022;Sala/anfiteatro aulas;D1.07
+71;50;14;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;05/12/2022;Sala/anfiteatro aulas;AA2.24
+72;49;13;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;28/11/2022;Sala/anfiteatro aulas;D1.07
+73;48;12;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;21/11/2022;Sala/anfiteatro aulas;D1.07
+74;47;11;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;14/11/2022;Sala/anfiteatro aulas;D1.07
+75;46;10;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;07/11/2022;Sala/anfiteatro aulas;D1.07
+76;45;9;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;31/10/2022;Sala/anfiteatro aulas;D1.07
+77;44;8;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;24/10/2022;Sala/anfiteatro aulas;D1.07
+78;43;7;-;;DF;Investimentos II;01074TP01;DFB1;3;Seg;19:00:00;20:30:00;17/10/2022;Sala/anfiteatro aulas;D1.07
+79;51;16;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;15/12/2022;Sala de Aulas normal;C6.10
+80;48;13;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;24/11/2022;Sala de Aulas normal;C6.10
+81;47;12;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;17/11/2022;Sala de Aulas normal;C6.10
+82;46;11;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;10/11/2022;Sala de Aulas normal;C6.10
+83;44;9;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;27/10/2022;Sala de Aulas normal;C6.10
+84;43;8;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;20/10/2022;Sala de Aulas normal;C6.10
+85;42;7;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;13/10/2022;Sala de Aulas normal;C6.10
+86;41;6;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;06/10/2022;Sala de Aulas normal;C6.10
+87;40;5;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;29/09/2022;Sala de Aulas normal;C6.10
+88;39;4;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;22/09/2022;Sala de Aulas normal;C6.10
+89;38;3;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qui;14:30:00;16:00:00;15/09/2022;Sala/anfiteatro aulas;
+90;51;15;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;14/12/2022;Sala/anfiteatro aulas;C6.10
+91;50;14;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;07/12/2022;Sala/anfiteatro aulas;C6.10
+92;49;13;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;30/11/2022;Sala/anfiteatro aulas;C6.10
+93;48;12;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;23/11/2022;Sala/anfiteatro aulas;C6.10
+94;47;11;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;16/11/2022;Sala/anfiteatro aulas;C6.10
+95;46;10;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;09/11/2022;Sala/anfiteatro aulas;C6.10
+96;44;8;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;26/10/2022;Sala/anfiteatro aulas;C6.10
+97;43;7;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;19/10/2022;Sala/anfiteatro aulas;C6.10
+98;42;6;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;12/10/2022;Sala/anfiteatro aulas;C6.10
+99;40;4;-;;LETI, LEI, LEI-PL;Cálculo I;03703TP02;EI-A6, EI-A5, EI-A4, EI-A3, EI-A2, EI-A1;52;Qua;13:00:00;14:30:00;28/09/2022;Sala/anfiteatro aulas;C6.10

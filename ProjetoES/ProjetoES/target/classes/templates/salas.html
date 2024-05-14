@@ -36,11 +36,11 @@
         </div>
 
         <div id="tableContainer"></div>
-        <button id="showHeatmapButton" >Visualizar HeatMap semanal</button>
+        <button id="showHeatmapButton" >Visualizar HeatMap semanal</button>        
         <div id="heatmap-containerDias"></div>
 
-
         <button id="toggleHeatmapButton" onclick="toggleHeatmapSelector()">Visualizar HeatMap mensal</button>
+
         <div id="monthSelectorContainer">
             <label for="monthSelect">Escolha o mês:</label>
             <select id="monthSelect">
@@ -62,14 +62,25 @@
         </div>
 
         <button class="boat-button" onclick="window.location.href='/'">&#x21A9;</button>
-
+        
+        <div id="spacer"></div>
+        <button id="loadNetworkGraphButton">Visualizar NetworkGraph</button>
+        <div id="networkGraphContainer"></div>  
+        
     </main>
 
+    <!-- Referenciando a biblioteca Tabulator para criar as tabelas dinâmicas -->
     <script src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+
     <!-- Referenciando a biblioteca Chart.js hospedada na web -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Script que contém a lógica para a página de salas -->
     <script src="/js/salas.js"></script>
+
+    <!-- Include D3.js library -->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    
 
 </body>
 
